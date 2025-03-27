@@ -6,13 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --write \"app/**/*.{ts,tsx,js,jsx}\" \"types/**/*.{ts,tsx,js,jsx}\""
   },
   "dependencies": {
     "firebase": "^11.5.0",
     "next": "15.2.3",
+    "@heroui/react": "^2.7.5",
+    "@tailwindcss/postcss": "^4.0.14",
+    "framer-motion": "^12.5.0",
+    "next-themes": "^0.4.6",
+    "postcss": "^8.5.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.0.14"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -22,5 +29,6 @@
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "typescript": "^5"
-  }
+  },
+  "packageManager": "pnpm@10.6.5+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
 }
