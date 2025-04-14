@@ -1,17 +1,7 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import MainProvider from "./contexts/MainProvider";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import NavbarComponent from "./components/Navbar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -21,15 +11,14 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <MainProvider>
-        {children}
-        </MainProvider>
+      <body>
+        <NavbarComponent />
+        <MainProvider>{children}</MainProvider>
       </body>
     </html>
-  )
+  );
 }
