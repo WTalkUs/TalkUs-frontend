@@ -10,24 +10,27 @@
     "format": "prettier --write \"app/**/*.{ts,tsx,js,jsx}\" \"types/**/*.{ts,tsx,js,jsx}\""
   },
   "dependencies": {
-    "firebase": "^11.5.0",
-    "next": "15.2.3",
     "@heroui/react": "^2.7.5",
-    "@tailwindcss/postcss": "^4.0.14",
+    "@heroui/system": "^2.4.13",
+    "@heroui/theme": "^2.4.13",
+    "@react-types/shared": "^3.29.0",
+    "firebase": "^11.5.0",
     "framer-motion": "^12.5.0",
+    "next": "15.2.3",
     "next-themes": "^0.4.6",
-    "postcss": "^8.5.3",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwindcss": "^4.0.14"
+    "react-dom": "^19.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
+    "postcss": "^8.5.3",
+    "tailwindcss": "^3.4.17",
     "typescript": "^5"
   },
   "packageManager": "pnpm@10.6.5+sha512.faf344af2d6ca65c4c5c8c2224ea77a81a5e8859cbc4e06b1511ddce2f0151512431dd19e6aff31f2c6a8f5f2aced9bd2273e1fed7dd4de1868984059d2c4247"
