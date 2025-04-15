@@ -14,21 +14,37 @@ import Login from "./Login";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
-import { IconSearch } from "@tabler/icons-react";
+import {
+  IconSearch,
+  IconHomeFilled,
+  IconUsersGroup,
+} from "@tabler/icons-react";
 
 export default function NavbarComponent() {
   return (
-    <Navbar isBordered>
-      <NavbarBrand>
+    <Navbar maxWidth="full" className="w-full fixed bg-background-2 shadow-md">
+      <NavbarBrand className="flex gap-2 mr-2 pr-2">
         <Image
           alt="Logo"
-          className="mr-4"
-          height={24}
+          className="mr-4 min-w-[30px] min-h-[30px] w-[30px] h-[30px]"
+          height={30}
           src={TalkUs}
-          width={24}
+          width={30}
         />
-        <p className="font-bold text-inherit">TalkUs</p>
+        <p className="hidden lg:flex font-bold text-inherit text-xl">TalkUs</p>
       </NavbarBrand>
+      <NavbarContent>
+        <NavbarItem className="pl-8">
+          <Link href="#" className="flex">
+            <IconHomeFilled size={24} className="mr-4 text-default-500" />
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link href="#" className="flex">
+            <IconUsersGroup size={24} className="mr-4 text-default-500" />
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
       <NavbarContent justify="center">
         <Input
           classNames={{
@@ -36,22 +52,22 @@ export default function NavbarComponent() {
             mainWrapper: "h-full",
             input: "text-small",
             inputWrapper:
-              "h-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
+              "h-full w-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
           }}
           placeholder="Type to search..."
           size="sm"
-          startContent={<IconSearch size={18} className="text-default-500" />}
+          endContent={<IconSearch size={18} className="text-default-500" />}
           type="search"
         />
       </NavbarContent>
       <NavbarContent justify="end">
+        <NavbarItem>
+          <Button as={Link} color="secondary" href="#" variant="solid">
+            Register
+          </Button>
+        </NavbarItem>
         <NavbarItem className="hidden lg:flex">
           <Login />
-        </NavbarItem>
-        <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
         </NavbarItem>
       </NavbarContent>
     </Navbar>
