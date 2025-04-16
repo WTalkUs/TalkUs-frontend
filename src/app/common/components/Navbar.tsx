@@ -11,7 +11,8 @@ import {
 import Image from "next/image";
 
 //Components
-import Login from "./Login";
+import Login from "./Login";  
+import Register from "./register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
@@ -60,9 +61,7 @@ export default function NavbarComponent() {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button as={Link} color="secondary" href="#" variant="solid">
-            Register
-          </Button>
+          <Register />
         </NavbarItem>
         <NavbarItem className="hidden md:flex">
           <Login />
