@@ -4,68 +4,93 @@ import {
   Button,
   Modal,
   ModalContent,
+  ModalHeader,
   useDisclosure,
   Form,
   Input,
 } from "@heroui/react";
+import { loginAndGetToken } from "@lib/auth";
+import Image from "next/image";
+import { parseFirebaseAuthError } from "@lib/baseAuthError";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [token, setToken] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [action, setAction] = useState(null);
+  const [errorMessage, setErrorMessage] = useState<Record<string, string | string[]>>({});
 
   const handleLogin = async (data: any) => {
     try {
-      const formData = new FormData(data);
-      //console.log("FormData:", formData);
-      //const token = await loginAndGetToken(email, password);
+      data.preventDefault();
+      const formData = Object.fromEntries(new FormData(data.currentTarget));
+
+      const email = formData.email as string;
+      const password = formData.password as string;
+
+      if (!email) {
+        setErrorMessage({
+          email: "El correo electrónico es obligatorio",
+        });
+        return;
+      }
+
+      const token = await loginAndGetToken(email, password);
       setToken(token);
       console.log("✅ Token obtenido:", token);
     } catch (error) {
-      console.error("❌ Error al iniciar sesión:", error);
+      const errorMessage = parseFirebaseAuthError(error);
+      setErrorMessage({ general: errorMessage });
     }
   };
 
   return (
     <>
       <Button onPress={onOpen}>Login</Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          <Form
-            onSubmit={(e) => {
-              e.preventDefault();
-              console.log("Form submitted:", e.currentTarget);
-              handleLogin(e.currentTarget);
-            }}
-          >
-            <Input
-              isRequired
-              errorMessage="Please enter a valid email"
-              label="Email"
-              labelPlacement="outside"
-              name="email"
-              placeholder="Enter your email"
-              type="email"
-              className="mb-4 w-full border border-gray-300 rounded-md shadow-sm focus:ring focus:ring-blue-500"
-            />
-            <Input
-              isRequired
-              errorMessage="Please enter a valid password"
-              label="Password"
-              labelPlacement="outside"
-              name="password"
-              placeholder="Enter your password"
-              type="password"
-            />
-            <Button color="primary" type="submit">
-              Iniciar sesión
-            </Button>
-          </Form>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="5xl"
+        className="shadow-md shadow-fuchsia-500"
+      >
+        <ModalContent className="grid grid-cols-5 gap-2 ">
+          <Image
+            src="/modal_login.svg"
+            alt="modal_login"
+            width={600}
+            height={500}
+            className="right-0 top-2 left-2 col-span-3"
+          />
+          <div className="col-span-2 justify-center flex flex-col">
+            <ModalHeader className="self-center text-3xl">
+              Bienvenido a TalkUs
+            </ModalHeader>
+            <Form
+              className="flex flex-col gap-4 m-8"
+              validationErrors={errorMessage}
+              onSubmit={handleLogin}
+            >
+              <Input
+                isRequired
+                label="Email"
+                labelPlacement="outside"
+                name="email"
+                placeholder="Enter your email"
+                type="email"
+              />
+              <Input
+                isRequired
+                label="Password"
+                labelPlacement="outside"
+                name="password"
+                placeholder="Enter your password"
+                type="password"
+              />
+              <Button color="secondary" type="submit" className="self-center">
+                Login
+              </Button>
+            </Form>
+          </div>
         </ModalContent>
       </Modal>
-      {token && <p>Token: {token}</p>}
     </>
   );
 }
