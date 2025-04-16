@@ -10,7 +10,8 @@ import {
 import Image from "next/image";
 
 //Components
-import Login from "./Login";
+import Login from "./Login";  
+import Register from "./register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
@@ -49,9 +50,7 @@ export default function NavbarComponent() {
           <Login />
         </NavbarItem>
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            Sign Up
-          </Button>
+          <Register />
         </NavbarItem>
       </NavbarContent>
     </Navbar>
