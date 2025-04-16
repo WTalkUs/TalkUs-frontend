@@ -54,7 +54,7 @@ export default function Register() {
 
   return (
     <>
-      <Button onPress={onOpen}>Register</Button>
+      <Button onPress={onOpen} color="secondary">Register</Button>
       <Modal
         size="5xl"
         className="shadow-md shadow-fuchsia-500"
@@ -65,7 +65,7 @@ export default function Register() {
           <Image
             src="/modal_register.svg"
             alt="modal_register"
-            width={400}
+            width={600}
             height={500}
             className="size-full right-0 left-3 object-cover "
           />
