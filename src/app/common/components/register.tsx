@@ -118,7 +118,7 @@ export default function Register() {
               </div>
             </div>
           )}
-          <div className="justify-center flex flex-col col-span-2">
+          <div className="justify-center flex flex-col col-span-2 min-h-[620px]">
             <ModalHeader className="self-center text-3xl mt-3">
               Welcome to TalkUs
             </ModalHeader>
@@ -133,7 +133,6 @@ export default function Register() {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="mb-2"
               />
               <Input
               isRequired
@@ -145,7 +144,6 @@ export default function Register() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="mb-2"
               />
               <Input
               isRequired
@@ -157,7 +155,6 @@ export default function Register() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="mb-2"
               />
               <Input
               isRequired
