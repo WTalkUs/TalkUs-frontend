@@ -16,7 +16,9 @@ import { parseFirebaseAuthError } from "@lib/baseAuthError";
 export default function LoginPage() {
   const [token, setToken] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [errorMessage, setErrorMessage] = useState<Record<string, string | string[]>>({});
+  const [errorMessage, setErrorMessage] = useState<
+    Record<string, string | string[]>
+  >({});
 
   const handleLogin = async (data: any) => {
     try {

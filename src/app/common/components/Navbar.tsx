@@ -21,7 +21,7 @@ import { useState } from "react";
 
 //Components
 import Login from "./Login";
-import Register from "./register";
+import Register from "./Register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
@@ -142,7 +142,7 @@ export default function NavbarComponent() {
                 Home
               </DropdownItem>
               <DropdownItem key="groups" className="sm:hidden">
-                Grops
+                Groups
               </DropdownItem>
               <DropdownItem key="settings">Settings</DropdownItem>
               <DropdownItem key="notifications" className="md:hidden">
