@@ -18,6 +18,7 @@ const config = {
         "background-2": "var(--background-2)",
         "background-3": "var(--background-3)",
         "secondary-1": "#5F348D",
+        "background-1": "#262D34",
       },
     },
   },
