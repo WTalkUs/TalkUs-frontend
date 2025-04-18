@@ -16,6 +16,7 @@ const config = {
       },
       colors: {
         "background-2": "var(--background-2)",
+        "background-3": "var(--background-3)",
         "secondary-1": "#5F348D",
       },
     },

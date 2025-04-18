@@ -29,7 +29,6 @@ export default function Register() {
   const [error, setError] = useState<boolean>(false);
   const confirmInvalid = confirmPassword !== "" && confirmPassword !== password;
 
-
   // Maneja el envío del formulario
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -67,7 +66,6 @@ export default function Register() {
       // Restablecer el estado de error
       setError(false);
       setIsVisible(false);
-
     } catch (error: unknown) {
       if (error instanceof Error) {
         setError(true);
@@ -124,54 +122,54 @@ export default function Register() {
             </ModalHeader>
             <Form className="flex flex-col gap-4 m-8" onSubmit={handleRegister}>
               <Input
-              isRequired
-              errorMessage="Please enter a valid Username"
-              label="Username"
-              labelPlacement="outside"
-              name="username"
-              placeholder="Enter your username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+                isRequired
+                errorMessage="Please enter a valid Username"
+                label="Username"
+                labelPlacement="outside"
+                name="username"
+                placeholder="Enter your username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
               />
               <Input
-              isRequired
-              errorMessage="Please enter a valid email"
-              label="Email"
-              labelPlacement="outside"
-              name="email"
-              placeholder="Enter your email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+                isRequired
+                errorMessage="Please enter a valid email"
+                label="Email"
+                labelPlacement="outside"
+                name="email"
+                placeholder="Enter your email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
               <Input
-              isRequired
-              errorMessage="Please enter a valid password"
-              label="Password"
-              labelPlacement="outside"
-              name="password"
-              placeholder="Enter your password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+                isRequired
+                errorMessage="Please enter a valid password"
+                label="Password"
+                labelPlacement="outside"
+                name="password"
+                placeholder="Enter your password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
               />
               <Input
-              isRequired
-              label="Confirm Password"
-              labelPlacement="outside"
-              name="confirmPassword"
-              placeholder="Confirm password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              errorMessage={
-                confirmInvalid ? "Passwords do not match" : undefined
-              }
-              className="mb-4"
+                isRequired
+                label="Confirm Password"
+                labelPlacement="outside"
+                name="confirmPassword"
+                placeholder="Confirm password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                errorMessage={
+                  confirmInvalid ? "Passwords do not match" : undefined
+                }
+                className="mb-4"
               />
               <Button type="submit" className="bg-secondary self-center">
-              Register
+                Register
               </Button>
             </Form>
           </div>
