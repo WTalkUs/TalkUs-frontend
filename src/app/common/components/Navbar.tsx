@@ -34,7 +34,7 @@ import {
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const islogued = true; // This should be replaced with actual authentication logic
+  const isLogged = true; // This should be replaced with actual authentication logic
 
   const getItemColor = (item: string) => {
     if (item === "Log Out") return "danger";
