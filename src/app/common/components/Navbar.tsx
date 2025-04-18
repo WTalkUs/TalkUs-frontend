@@ -21,7 +21,7 @@ import { useState } from "react";
 
 //Components
 import Login from "./Login";
-import Register from "./Register";
+import Register from "./register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
@@ -96,7 +96,7 @@ export default function NavbarComponent() {
           type="search"
         />
       </NavbarContent>
-      {!islogued ? (
+      {!isLogged ? (
         <NavbarContent justify="end">
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}

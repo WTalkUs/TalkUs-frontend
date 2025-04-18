@@ -10,9 +10,13 @@
     "format": "prettier --write \"app/**/*.{ts,tsx,js,jsx}\" \"types/**/*.{ts,tsx,js,jsx}\""
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@heroui/react": "^2.7.5",
     "@heroui/system": "^2.4.13",
     "@heroui/theme": "^2.4.13",
+    "@mui/icons-material": "^7.0.2",
+    "@mui/material": "^7.0.2",
     "@react-types/shared": "^3.29.0",
     "@tabler/icons-react": "^3.31.0",
     "firebase": "^11.5.0",
