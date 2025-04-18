@@ -1,17 +1,26 @@
+"use client";
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
+  NavbarMenuToggle,
+  NavbarMenu,
+  NavbarMenuItem,
   Link,
+  DropdownItem,
+  DropdownTrigger,
+  Dropdown,
+  DropdownMenu,
+  Avatar,
   Button,
   Input,
-  Spacer,
 } from "@heroui/react";
 import Image from "next/image";
+import { useState } from "react";
 
 //Components
-import Login from "./Login";  
+import Login from "./Login";
 import Register from "./register";
 
 //Assets
@@ -20,11 +29,33 @@ import {
   IconSearch,
   IconHomeFilled,
   IconUsersGroup,
+  IconBell,
 } from "@tabler/icons-react";
 
 export default function NavbarComponent() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const islogued = true; // This should be replaced with actual authentication logic
+
+  const getItemColor = (item: string) => {
+    if (item === "Log Out") return "danger";
+    if (item === "Help & Feedback") return "secondary";
+    return "foreground";
+  };
+
+  const menuItemsNotLogged = [
+    "Home",
+    "Groups",
+    "Login",
+    "Register",
+    "Help & Feedback",
+  ];
+
   return (
-    <Navbar maxWidth="full" className="w-full fixed bg-background-2 shadow-md">
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      maxWidth="full"
+      className="w-full fixed bg-background-2 shadow-md"
+    >
       <NavbarBrand className="flex items-center gap-4 flex-shrink-0 w-auto">
         <Image
           alt="Logo"
@@ -33,15 +64,21 @@ export default function NavbarComponent() {
           src={TalkUs}
           width={30}
         />
-        <p className="hidden md:flex font-bold text-inherit text-xl">TalkUs</p>
+        <p className="hidden sm:flex font-bold text-inherit text-xl">TalkUs</p>
 
-        <Link href="#" className="flex items-center">
+        <Button
+          isIconOnly
+          className="bg-background-3 rounded-lg hidden sm:flex"
+        >
           <IconHomeFilled size={24} className="text-default-500" />
-        </Link>
+        </Button>
 
-        <Link href="#" className="flex items-center">
+        <Button
+          isIconOnly
+          className="bg-background-3 rounded-lg hidden sm:flex"
+        >
           <IconUsersGroup size={24} className="text-default-500" />
-        </Link>
+        </Button>
       </NavbarBrand>
       <NavbarContent justify="center" className="flex-1 lg:flex max-w-3xl px-4">
         <Input
@@ -59,14 +96,82 @@ export default function NavbarComponent() {
           type="search"
         />
       </NavbarContent>
-      <NavbarContent justify="end">
-        <NavbarItem>
-          <Register />
-        </NavbarItem>
-        <NavbarItem className="hidden md:flex">
-          <Login />
-        </NavbarItem>
-      </NavbarContent>
+      {!islogued ? (
+        <NavbarContent justify="end">
+          <NavbarMenuToggle
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            className="sm:hidden"
+          />
+          <NavbarItem className="hidden sm:flex">
+            <Register />
+          </NavbarItem>
+          <NavbarItem className="hidden md:flex">
+            <Login />
+          </NavbarItem>
+        </NavbarContent>
+      ) : (
+        <NavbarContent as="div" justify="end">
+          <Button
+            isIconOnly
+            className="bg-background-3 rounded-lg hidden md:flex"
+          >
+            <IconBell size={24} className="text-default-500" />
+          </Button>
+          <Dropdown placement="bottom-end">
+            <DropdownTrigger>
+              <div className="flex items-center gap-2 cursor-pointer">
+                <Avatar
+                  isBordered
+                  className="transition-transform"
+                  color="secondary"
+                  name="Jason Hughes"
+                  size="sm"
+                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                />
+                <p className="font-bold text-inherit text-lg pl-2 hidden sm:flex">
+                  Jose Luis
+                </p>
+              </div>
+            </DropdownTrigger>
+            <DropdownMenu aria-label="Profile Actions" variant="flat">
+              <DropdownItem key="profile" className="h-14 gap-2">
+                <p className="font-semibold">Signed in as</p>
+                <p className="font-semibold">zoey@example.com</p>
+              </DropdownItem>
+              <DropdownItem key="home" className="sm:hidden">
+                Home
+              </DropdownItem>
+              <DropdownItem key="groups" className="sm:hidden">
+                Grops
+              </DropdownItem>
+              <DropdownItem key="settings">Settings</DropdownItem>
+              <DropdownItem key="notifications" className="md:hidden">
+                Notifications
+              </DropdownItem>
+              <DropdownItem key="help_and_feedback">
+                Help & Feedback
+              </DropdownItem>
+              <DropdownItem key="logout" color="danger">
+                Log Out
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </NavbarContent>
+      )}
+      <NavbarMenu>
+        {menuItemsNotLogged.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              className="w-full"
+              color={getItemColor(item)}
+              href="#"
+              size="lg"
+            >
+              {item}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 }
