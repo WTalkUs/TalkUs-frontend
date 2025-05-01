@@ -22,6 +22,7 @@ export default function PostModal() {
   const [tag, setTag] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [authorId, setAuthorId] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handlePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,6 +30,9 @@ export default function PostModal() {
     if (!title || !content) {
       return alert("Todos los campos son obligatorios");
     }
+
+    setIsSubmitting(true);
+
     const fd = new FormData();
     fd.append("title", title);
     fd.append("content", content);
@@ -41,6 +45,7 @@ export default function PostModal() {
 
     if (!res.ok) {
       const err = await res.text();
+      setIsSubmitting(false);
       return alert("Error al crear post: " + err);
     }
 
@@ -118,8 +123,13 @@ export default function PostModal() {
               }}
             />
 
-            <Button type="submit" color="secondary" className="self-center">
-              Submit
+            <Button
+              type="submit"
+              color="secondary"
+              className="self-center"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Creating…" : "Submit"}
             </Button>
           </Form>
         </ModalContent>
