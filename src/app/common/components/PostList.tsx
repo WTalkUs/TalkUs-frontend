@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
+import { CircularProgress } from "@heroui/react";
 
 type Post = {
   id: string;             
@@ -34,11 +35,11 @@ export default function PostsList() {
         .finally(() => setLoading(false));
     }, []);
     
-    if (loading) return <p>Cargando posts…</p>;
+    if (loading) return <CircularProgress aria-label="Loading..." color="secondary" />;
     if (error)   return <p style={{ color: "red" }}>Error: {error}</p>;
     if (posts.length === 0) return <p>No hay publicaciones</p>;
     return (
-      <div>
+      <div className="mt-0">
         {posts.map(post => (
           <PostCard
         key={post.id}

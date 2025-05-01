@@ -10,6 +10,7 @@ import {
   Link,
 } from "@heroui/react";
 
+import Tags from "./Tags";
 import Image from "next/image";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
@@ -49,12 +50,10 @@ export default function PostCard({
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-2">
             <div>
-              <h2 className="text-2xl font-semibold text-default-900">
+              <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {title.length > 40 ? `${title.substring(0, 40)}...` : title}
               </h2>
-              <p className="text-small text-default-400 mt-1">
-                AQUI VAN LOS TAGS
-              </p>
+              <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
             <div className="text-end ">
               <FavoriteIcon fontSize="medium" />
