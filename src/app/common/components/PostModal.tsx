@@ -10,6 +10,7 @@ import {
   Textarea,
   Select,
   SelectItem,
+  Divider,
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
 
@@ -60,7 +61,7 @@ export default function PostModal() {
 
   return (
     <>
-      <Button onPress={onOpen} className="bg-secondary max-w-[100px] p-2">
+      <Button onPress={onOpen} className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2">
         Create Post
       </Button>
 
@@ -71,16 +72,16 @@ export default function PostModal() {
         onOpenChange={onClose}
       >
         <ModalContent className="p-8 pt-0 space-y-6">
-          <ModalHeader className=" text-2xl font-semibold">
+          <ModalHeader className="h-8 text-2xl font-semibold pt-0 mx-auto">
             Create a Post
           </ModalHeader>
-
+          <Divider />
           <Form onSubmit={handlePost} className="space-y-4">
             <Input
               isRequired
               name="title"
+              variant="underlined"
               type="text"
-              placeholder="Title"
               label="Title"
               className="!w-full"
               value={title}
