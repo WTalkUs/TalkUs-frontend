@@ -33,23 +33,23 @@ export default function PostsList() {
         .catch(err => setError(err.message))
         .finally(() => setLoading(false));
     }, []);
-  
+    
     if (loading) return <p>Cargando posts…</p>;
     if (error)   return <p style={{ color: "red" }}>Error: {error}</p>;
     if (posts.length === 0) return <p>No hay publicaciones</p>;
-  
     return (
       <div>
         {posts.map(post => (
           <PostCard
-            key={post.id}
-            id={post.id}
-            title={post.title}
-            content={post.content}
-            authorId={post.author_id}
-            createdAt={post.created_at}
-            likes={post.likes}
-            dislikes={post.dislikes}
+        key={post.id}
+        id={post.id}
+        title={post.title}
+        content={post.content}
+        imageUrl={post.image_url ? post.image_url : "https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378143/samples/man-portrait.jpg"}
+        authorId={post.author_id}
+        createdAt={post.created_at}
+        likes={post.likes}
+        dislikes={post.dislikes}
           />
         ))}
       </div>
