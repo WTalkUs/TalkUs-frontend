@@ -15,6 +15,7 @@ import {
   Avatar,
   Button,
   Input,
+  addToast,
 } from "@heroui/react";
 import Image from "next/image";
 import { useState } from "react";
@@ -31,10 +32,11 @@ import {
   IconUsersGroup,
   IconBell,
 } from "@tabler/icons-react";
+import { useAuth } from "@/app/contexts/AuthProvider";
+import { logout } from "@/app/services/auth/logout";
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const isLogged = true; // This should be replaced with actual authentication logic
 
   const getItemColor = (item: string) => {
     if (item === "Log Out") return "danger";
@@ -49,6 +51,26 @@ export default function NavbarComponent() {
     "Register",
     "Help & Feedback",
   ];
+
+  const { user , loading } = useAuth()
+
+  const handleLogout = async () => {
+    const { success, error } = await logout();
+    if (success) {
+      addToast({
+        title: "Cierre de sesión",
+        description: "Has cerrado sesión correctamente.",
+        color: "success",
+      });
+    } else {
+      console.error("Logout error:", error);
+      addToast({
+        title: "Error",
+        description: "No se pudo cerrar sesión.",
+        color: "danger",
+      });
+    }
+  }
 
   return (
     <Navbar
@@ -96,7 +118,7 @@ export default function NavbarComponent() {
           type="search"
         />
       </NavbarContent>
-      {!isLogged ? (
+      {!user ? (
         <NavbarContent justify="end">
           <NavbarMenuToggle
             aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -151,7 +173,7 @@ export default function NavbarComponent() {
               <DropdownItem key="help_and_feedback">
                 Help & Feedback
               </DropdownItem>
-              <DropdownItem key="logout" color="danger">
+              <DropdownItem onClick={() => handleLogout()} key="logout" color="danger">
                 Log Out
               </DropdownItem>
             </DropdownMenu>
