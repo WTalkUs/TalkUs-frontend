@@ -1,7 +1,10 @@
 import { getAuth, signOut } from "firebase/auth";
 import { app } from "@lib/firebase";
 
-export const logout = async (): Promise<{ success: boolean; error?: string }> => {
+export const logout = async (): Promise<{
+  success: boolean;
+  error?: string;
+}> => {
   const auth = getAuth(app);
   try {
     await signOut(auth);

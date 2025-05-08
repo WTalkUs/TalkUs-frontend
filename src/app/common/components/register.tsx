@@ -40,13 +40,16 @@ export default function Register() {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/public/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, email, password }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/public/register`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, email, password }),
+        }
+      );
       if (!res.ok) {
         // Extraer mensaje de error de la respuesta
         const errorText = await res.text();

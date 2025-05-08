@@ -39,7 +39,7 @@ export default function PostModal() {
     fd.append("content", content);
     if (imageFile) fd.append("image", imageFile, imageFile.name);
 
-    const res = await fetch("http://localhost:8080/public/posts", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/posts`, {
       method: "POST",
       body: fd,
     });
@@ -61,7 +61,10 @@ export default function PostModal() {
 
   return (
     <>
-      <Button onPress={onOpen} className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2">
+      <Button
+        onPress={onOpen}
+        className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2"
+      >
         Create Post
       </Button>
 
@@ -98,7 +101,7 @@ export default function PostModal() {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
-  
+
             {/* <Select
               name="tags"
               label="Tag"
