@@ -22,7 +22,7 @@ import { useState } from "react";
 
 //Components
 import Login from "./Login";
-import Register from "./register";
+import Register from "./Register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
@@ -52,7 +52,7 @@ export default function NavbarComponent() {
     "Help & Feedback",
   ];
 
-  const { user , loading } = useAuth()
+  const { user, loading } = useAuth();
 
   const handleLogout = async () => {
     const { success, error } = await logout();
@@ -70,7 +70,7 @@ export default function NavbarComponent() {
         color: "danger",
       });
     }
-  }
+  };
 
   return (
     <Navbar
@@ -87,23 +87,20 @@ export default function NavbarComponent() {
           width={30}
         />
         <p className="hidden sm:flex font-bold text-inherit text-xl">TalkUs</p>
-        {(user) ? (
+        {user && (
           <Button
-          isIconOnly
-          className="bg-background-3 rounded-lg hidden sm:flex"
-        >
-          <IconUsersGroup size={24} className="text-default-500" />
-        </Button>) : (
-          <></>)
-        }
+            isIconOnly
+            className="bg-background-3 rounded-lg hidden sm:flex"
+          >
+            <IconUsersGroup size={24} className="text-default-500" />
+          </Button>
+        )}
         <Button
           isIconOnly
           className="bg-background-3 rounded-lg hidden sm:flex"
         >
           <IconHomeFilled size={24} className="text-default-500" />
         </Button>
-
-        
       </NavbarBrand>
       <NavbarContent justify="center" className="flex-1 lg:flex max-w-3xl px-4">
         <Input
@@ -176,7 +173,11 @@ export default function NavbarComponent() {
               <DropdownItem key="help_and_feedback">
                 Help & Feedback
               </DropdownItem>
-              <DropdownItem onClick={() => handleLogout()} key="logout" color="danger">
+              <DropdownItem
+                onClick={() => handleLogout()}
+                key="logout"
+                color="danger"
+              >
                 Log Out
               </DropdownItem>
             </DropdownMenu>
