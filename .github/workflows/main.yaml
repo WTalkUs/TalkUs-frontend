@@ -1,4 +1,4 @@
-name: test action
+name: CD action
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
 jobs:
   deploy:
     if: github.event.pull_request.merged == true # Solo si se hizo merge
-    name: TEST
+    name: CD
     runs-on: ubuntu-latest
 
     steps:
@@ -36,6 +36,21 @@ jobs:
       - name: DockerHub Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # 👉 Push la imagen
+      # 👉 Push the Docker image
       - name: Push Docker image to DockerHub
         run: docker push ${{ secrets.DOCKER_USERNAME }}/talkus-frontend-${{ github.event.number }}:${{ github.sha }}
+
+      # 👉 Login into tailscale
+      - name: Connect to Tailscale
+        uses: tailscale/github-action@v2
+        with:
+          authkey: ${{ secrets.TAILSCALE_AUTHKEY }}
+
+      # 👉 Pull and build Docker image
+      - name: SSH to server
+        run: |
+          ssh -o StrictHostKeyChecking=no -i /tmp/private_key ${{ secrets.SERVER_USER }}
+        script: |
+          cd /documents/dockers-projects/talkus/
+          sed -i '/^DOCKER_IMAGE_FRONTEND_DEV=/d' .env
+          echo "DOCKER_IMAGE_FRONTEND_DEV=${{ secrets.DOCKER_USERNAME }}/talkus-frontend-${{ github.event.number }}:${{ github.sha }}" >> .env
