@@ -20,4 +20,4 @@ jobs:
 
       # 👉 Build la imagen Docker
       - name: Build Docker image
-        run: docker build
+        run: docker build .
