@@ -48,6 +48,7 @@ jobs:
 
       # 👉 Pull and build Docker image
       - name: SSH to server
+        uses: appleboy/ssh-action@v0.1.4
         run: |
           ssh -o StrictHostKeyChecking=no -i /tmp/private_key ${{ secrets.SERVER_USER }}
         script: |
