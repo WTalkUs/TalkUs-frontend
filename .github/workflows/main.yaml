@@ -30,7 +30,7 @@ jobs:
             --build-arg NEXT_PUBLIC_FIREBASE_APP_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_APP_ID }} \
             --build-arg NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=${{ secrets.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID }} \
             --build-arg NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }} \
-            -f Dockerfile -t ${{ secrets.DOCKER_USERNAME }}/frontend-dev:${{ github.sha }} .
+            -f Dockerfile -t talkus/frontend-${{ github.event.number }}:${{ github.sha }} .
 
       # 👉 Log in to DockerHub
       - name: DockerHub Login
@@ -38,4 +38,4 @@ jobs:
 
       # 👉 Push la imagen
       - name: Push Docker image to DockerHub
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontend-dev:${{ github.sha }}
+        run: docker push talkus/frontend-${{ github.event.number }}:${{ github.sha }}
