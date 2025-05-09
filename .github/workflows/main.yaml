@@ -38,4 +38,4 @@ jobs:
 
       # 👉 Push la imagen
       - name: Push Docker image to DockerHub
-        run: docker push talkus/frontend-${{ github.event.number }}:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/talkus/frontend-${{ github.event.number }}:${{ github.sha }}
