@@ -58,3 +58,4 @@ jobs:
             cd documents/dockers-projects/talkus/
             sed -i '/^DOCKER_IMAGE_FRONTEND_DEV=/d' .env
             echo "DOCKER_IMAGE_FRONTEND_DEV=${{ secrets.DOCKER_USERNAME }}/talkus-frontend-${{ github.event.number }}:${{ github.sha }}" >> .env
+            docker compose up -d frontend-dev
