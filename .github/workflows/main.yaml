@@ -1,0 +1,23 @@
+name: test action
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [closed] # (mergeado)
+    branches: [main]
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true # Solo si se hizo merge
+    name: TEST
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 👉 Build la imagen Docker
+      - name: Build Docker image
+        run: docker build
