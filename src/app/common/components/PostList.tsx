@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
 import { CircularProgress } from "@heroui/react";
+import { getAllPosts } from "../../services/posts/getAll"; 
 
 type Post = {
   id: string;
@@ -25,14 +26,20 @@ export default function PostsList() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/posts`)
-      .then((res) => {
-        if (!res.ok) throw new Error(`Error ${res.status}`);
-        return res.json() as Promise<Post[]>;
-      })
-      .then((data) => setPosts(data))
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+    const fetchPosts = async () => {
+      setLoading(true);
+      const result = await getAllPosts();
+      
+      if (result.success) {
+        setPosts(result.data);
+        setError(null);
+      } else {
+        setError(result.error);
+      }
+      setLoading(false);
+    };
+    
+    fetchPosts();
   }, []);
 
   if (loading)
