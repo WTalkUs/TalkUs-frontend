@@ -11,52 +11,79 @@ import {
   Select,
   SelectItem,
   Divider,
+  Alert,
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
+import { createPost } from "../../services/posts/create"; // Ajusta la ruta según tu estructura
 
 export default function PostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  // Estados independientes para cada campo
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [tag, setTag] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [tag, setTag] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
-  const [authorId, setAuthorId] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  
+  // Estados para el manejo de errores y mensajes
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [responseMessage, setResponseMessage] = useState<string>("");
+  const [error, setError] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
 
   const handlePost = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!title || !content) {
-      return alert("Todos los campos son obligatorios");
+      setError(true);
+      setResponseMessage("Todos los campos son obligatorios");
+      setIsVisible(true);
+      return;
     }
 
     setIsSubmitting(true);
 
-    const fd = new FormData();
-    fd.append("title", title);
-    fd.append("content", content);
-    if (imageFile) fd.append("image", imageFile, imageFile.name);
+    try {
+      const result = await createPost({
+        title,
+        content,
+        tag: tag || undefined,
+        image: imageFile || undefined,
+      });
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/posts`, {
-      method: "POST",
-      body: fd,
-    });
-
-    if (!res.ok) {
-      const err = await res.text();
+      if (result.success) {
+        setSuccess(true);
+        setError(false);
+        setResponseMessage(result.message);
+        
+        // Limpiar el formulario
+        setTitle("");
+        setContent("");
+        setTag("");
+        setImageFile(null);
+        
+        setTimeout(() => {
+          onClose();
+          setIsVisible(false);
+        }, 1500);
+      } else {
+        setError(true);
+        setSuccess(false);
+        setResponseMessage(`Error: ${result.error}`);
+        setIsVisible(true);
+      }
+    } catch (error: unknown) {
+      setError(true);
+      setSuccess(false);
+      if (error instanceof Error) {
+        setResponseMessage(`Error inesperado: ${error.message}`);
+      } else {
+        setResponseMessage("Ocurrió un error desconocido");
+      }
+      setIsVisible(true);
+    } finally {
       setIsSubmitting(false);
-      return alert("Error al crear post: " + err);
     }
-
-    alert("Post creado con éxito");
-    onClose();
-    // limpia el formulario
-    setTitle("");
-    setContent("");
-    setTag("");
-    setImageFile(null);
   };
 
   return (
@@ -77,8 +104,16 @@ export default function PostModal() {
         <ModalContent className="p-8 pt-0 space-y-6">
           <ModalHeader className="h-8 text-2xl font-semibold pt-0 mx-auto">
             Create a Post
-          </ModalHeader>
-          <Divider />
+          </ModalHeader>    
+          {(error || success) && isVisible && (
+            <Alert
+              isVisible={true}
+              variant="faded"
+              color={error ? "danger" : "success"}
+              title={responseMessage}
+            />
+          )}
+          
           <Form onSubmit={handlePost} className="space-y-4">
             <Input
               isRequired

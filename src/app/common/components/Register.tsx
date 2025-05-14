@@ -10,74 +10,63 @@ import {
   Alert,
 } from "@heroui/react";
 
-import { useState, FormEvent, useEffect } from "react";
+import { useState, FormEvent } from "react";
 import Image from "next/image";
+import { register } from "../../services/auth/register";
 
 export default function Register() {
-  // Estados para email, password y mensaje de respuesta
   const [username, setUsername] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Maneja el estado del modal
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [isVisible, setIsVisible] = useState(true);
-
+  const [isVisible, setIsVisible] = useState<boolean>(true);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const confirmInvalid = confirmPassword !== "" && confirmPassword !== password;
 
-  // Maneja el envío del formulario
   const handleRegister = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (confirmInvalid) {
       setError(true);
       setResponseMessage("Passwords do not match");
+      setIsVisible(true);
       return;
     }
 
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/public/register`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, email, password }),
-        }
-      );
-      if (!res.ok) {
-        // Extraer mensaje de error de la respuesta
-        const errorText = await res.text();
-        throw new Error(errorText);
-      }
-      const data = await res.json();
-      setResponseMessage(`Usuario registrado correctamente`);
+      const result = await register({ username, email, password });
+      
+      if (result.success) {
+        setResponseMessage(result.message);
 
-      // Limpiar los estados e inputs
-      setUsername("");
-      setEmail("");
-      setPassword("");
+        // Limpiar los estados e inputs
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
 
-      // Cerrar el modal
-      onClose();
+        // Cerrar el modal
+        onClose();
 
-      // Restablecer el estado de error
-      setError(false);
-      setIsVisible(false);
-    } catch (error: unknown) {
-      if (error instanceof Error) {
+        // Restablecer el estado de error
+        setError(false);
+        setIsVisible(false);
+      } else {
         setError(true);
-        setResponseMessage(`Error: ${error.message}`);
+        setResponseMessage(`Error: ${result.error}`);
+        setIsVisible(true);
+      }
+    } catch (error: unknown) {
+      setError(true);
+      if (error instanceof Error) {
+        setResponseMessage(`Error inesperado: ${error.message}`);
       } else {
         setResponseMessage("Ocurrió un error desconocido");
       }
-
-      // Asegurarse de que la alerta sea visible
       setIsVisible(true);
     }
   };
@@ -101,7 +90,7 @@ export default function Register() {
             height={500}
             className="size-full right-0 left-3 object-cover sm:col-span-3 hidden sm:block"
           />
-          {error && (
+          {error && isVisible && ( 
             <div className="flex items-center justify-center bottom-0 absolute">
               <div className="flex flex-col w-full">
                 <div
@@ -109,7 +98,7 @@ export default function Register() {
                   className="w-full flex items-center my-3 relative"
                 >
                   <Alert
-                    isVisible={isVisible}
+                    isVisible={true} 
                     variant="faded"
                     onClose={() => setIsVisible(false)}
                     color="danger"
