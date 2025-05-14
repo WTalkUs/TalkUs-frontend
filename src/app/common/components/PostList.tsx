@@ -5,9 +5,17 @@ import PostCard from "./PostCard";
 import { CircularProgress } from "@heroui/react";
 import { getAllPosts } from "../../services/posts/getAll"; 
 
+type PostUser = {
+  uid: string;
+  email: string;
+  password: string;
+  username: string;
+}
+
 type Post = {
   id: string;
   author_id: string;
+  author: PostUser;
   title: string;
   content: string;
   created_at: string;
@@ -31,7 +39,17 @@ export default function PostsList() {
       const result = await getAllPosts();
       
       if (result.success) {
-        setPosts(result.data);
+        setPosts(
+          result.data.map((post: any) => ({
+            ...post,
+            author: post.author ?? {
+              uid: "",
+              email: "",
+              password: "",
+              username: "",
+            },
+          }))
+        );
         setError(null);
       } else {
         setError(result.error);
@@ -41,7 +59,6 @@ export default function PostsList() {
     
     fetchPosts();
   }, []);
-
   if (loading)
     return <CircularProgress aria-label="Loading..." color="secondary" />;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
@@ -52,6 +69,7 @@ export default function PostsList() {
         <PostCard
           key={post.id}
           id={post.id}
+          authorName={post.author.username}
           title={post.title}
           content={post.content}
           imageUrl={

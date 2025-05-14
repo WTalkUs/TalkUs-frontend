@@ -4,10 +4,6 @@ import {
   Avatar,
   Button,
   Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Link,
 } from "@heroui/react";
 
 import Tags from "./Tags";
@@ -19,6 +15,7 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 type PostCardProps = {
   id: string;
   title: string;
+  authorName: string;
   content: string;
   imageUrl: string;
   authorId: string;
@@ -30,6 +27,7 @@ type PostCardProps = {
 export default function PostCard({
   id,
   title,
+  authorName,
   content,
   authorId,
   imageUrl,
@@ -48,10 +46,10 @@ export default function PostCard({
           className="rounded-2xl object-cover size-full col-span-1 hidden md:block w-[156px] h-[156px]"
         />
         <div className="col-span-4 flex flex-col justify-between ">
-          <div className="grid grid-cols-2">
-            <div>
+          <div className="grid grid-cols-[4fr_1fr]">
+            <div className="">
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
-                {title.length > 40 ? `${title.substring(0, 40)}...` : title}
+                {title.length > 44 ? `${title.substring(0, 44)}...` : title}
               </h2>
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
@@ -69,21 +67,21 @@ export default function PostCard({
                 src="https://heroui.com/avatars/avatar-1.png"
               />
               <div className="flex flex-col">
-                <span className="text-default-900 font-semibold">
-                  Nombre del autor
-                </span>
-                <span className="text-small text-default-400">
-                  Hace{" "}
-                  {(() => {
-                    const diffMs = Date.now() - new Date(createdAt).getTime();
-                    const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-                    return diffH < 24
-                      ? `${diffH} hora${diffH !== 1 ? "s" : ""}`
-                      : `${Math.floor(diffH / 24)} día${
-                          Math.floor(diffH / 24) !== 1 ? "s" : ""
-                        }`;
-                  })()}
-                </span>
+              <span className="text-default-900 font-semibold">
+                {authorName}
+              </span>
+              <span className="text-small text-default-400">
+                Hace{" "}
+                {(() => {
+                const diffMs = Date.now() - new Date(createdAt).getTime();
+                const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+                return diffH < 24
+                  ? `${diffH} hora${diffH !== 1 ? "s" : ""}`
+                  : `${Math.floor(diffH / 24)} día${
+                    Math.floor(diffH / 24) !== 1 ? "s" : ""
+                  }`;
+                })()}
+              </span>
               </div>
             </div>
             <div className="flex justify-end md:gap-4 mt-4">
