@@ -10,15 +10,15 @@ import {
   Textarea,
   Select,
   SelectItem,
-  Divider,
   Alert,
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
-import { createPost } from "../../services/posts/create"; // Ajusta la ruta según tu estructura
+import { createPost } from "../../services/posts/create"; 
+import { useAuth } from "@/app/contexts/AuthProvider";
 
 export default function PostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const { user } = useAuth(); 
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<string>("");
@@ -41,10 +41,18 @@ export default function PostModal() {
       return;
     }
 
+    if (!user) {
+      setError(true);
+      setResponseMessage("Usuario no autenticado");
+      setIsVisible(true);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const result = await createPost({
+        author_id: user.uid,
         title,
         content,
         tag: tag || undefined,

@@ -4,6 +4,7 @@ import api from '../../lib/axios';
 
 
 interface CreatePostData {
+  author_id: string;
   title: string;
   content: string;
   tag?: string;
@@ -27,6 +28,7 @@ type CreatePostResponse = CreatePostSuccessResponse | CreatePostErrorResponse;
 export const createPost = async (postData: CreatePostData): Promise<CreatePostResponse> => {
   try {
     const formData = new FormData();
+    formData.append('author_id', postData.author_id);
     formData.append('title', postData.title);
     formData.append('content', postData.content);
     
