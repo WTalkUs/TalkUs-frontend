@@ -4,12 +4,22 @@ import {
   Avatar,
   Button,
   Card,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@heroui/react";
 
 import Tags from "./Tags";
 import Image from "next/image";
+
+import { useAuth } from "@/app/contexts/AuthProvider";
+import {deletePost} from "@/app/services/posts/delete";
+
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import { IconButton } from '@mui/material';
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 
 type PostCardProps = {
@@ -35,6 +45,20 @@ export default function PostCard({
   likes,
   dislikes,
 }: PostCardProps) {
+const { user } = useAuth();
+
+const handleDelete = async () => {
+  if (user) {
+    const result = await deletePost(id);
+    if (result.success) {
+      console.log("Post deleted successfully");
+    } else {
+      console.error("Error deleting post:", result.error);
+    }
+  } else {
+    console.error("User not authenticated");
+  }
+}
   return (
     <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
       <div className="grid md:grid-cols-5 gap-4 p-6">
@@ -53,11 +77,33 @@ export default function PostCard({
               </h2>
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
-            <div className="text-end ">
-              <FavoriteIcon fontSize="medium" />
+          
+            <div className="my-0 items-end max-h-[32px] text-right">
+              <IconButton className="cursor-pointer h-32px !pt-0" color="inherit">
+                <FavoriteIcon fontSize="medium" />
+              </IconButton>
+              {user?.uid === authorId ? (
+              <Dropdown>
+                <DropdownTrigger>
+                  <IconButton className="cursor-pointer h-32px !pt-0" color="inherit">
+                    <ExpandMoreIcon fontSize="small" />
+                  </IconButton>
+                </DropdownTrigger>
+                <DropdownMenu aria-label="Static Actions">
+                  <DropdownItem key="edit">Edit post</DropdownItem>
+                  <DropdownItem
+                    key="delete"
+                    className="text-danger"
+                    color="danger"
+                    onClick={handleDelete}
+                  >
+                    Delete file
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+              ) : null}
             </div>
           </div>
-
           <div className=" items-center mt-4 grid grid-cols-4">
             <div className="col-span-3 flex flex-col md:flex-row md:items-center gap-2">
               <Avatar
@@ -67,24 +113,24 @@ export default function PostCard({
                 src="https://heroui.com/avatars/avatar-1.png"
               />
               <div className="flex flex-col">
-              <span className="text-default-900 font-semibold">
-                {authorName}
-              </span>
-              <span className="text-small text-default-400">
-                Hace{" "}
-                {(() => {
-                const diffMs = Date.now() - new Date(createdAt).getTime();
-                const diffH = Math.floor(diffMs / (1000 * 60 * 60));
-                return diffH < 24
-                  ? `${diffH} hora${diffH !== 1 ? "s" : ""}`
-                  : `${Math.floor(diffH / 24)} día${
-                    Math.floor(diffH / 24) !== 1 ? "s" : ""
-                  }`;
-                })()}
-              </span>
+                <span className="text-default-900 font-semibold">
+                  {authorName}
+                </span>
+                <span className="text-small text-default-400">
+                  Hace{" "}
+                  {(() => {
+                    const diffMs = Date.now() - new Date(createdAt).getTime();
+                    const diffH = Math.floor(diffMs / (1000 * 60 * 60));
+                    return diffH < 24
+                      ? `${diffH} hora${diffH !== 1 ? "s" : ""}`
+                      : `${Math.floor(diffH / 24)} día${
+                          Math.floor(diffH / 24) !== 1 ? "s" : ""
+                        }`;
+                  })()}
+                </span>
               </div>
             </div>
-            <div className="flex justify-end md:gap-4 mt-4">
+            <div className="flex justify-end mt-4">
               <Button
                 size="sm"
                 onClick={() => console.log(`Liked post ${id}`)}
