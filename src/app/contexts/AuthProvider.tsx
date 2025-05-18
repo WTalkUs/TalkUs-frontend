@@ -5,6 +5,7 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { app } from "@lib/firebase"; // Asegúrate de exportar tu app desde aquí4
 
 const AuthContext = createContext<{
+  getIdToken(): unknown;
   user: User | null;
   loading: boolean;
 }>({
