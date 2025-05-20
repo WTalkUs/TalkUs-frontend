@@ -23,7 +23,7 @@ export const deletePost = async (
 ): Promise<DeletePostResponse> => {
 
   const auth = getAuth();
-    const user = auth.currentUser; 
+  const user = auth.currentUser; 
   try {
     const token = user ? await user.getIdToken() : null ;
     const response = await api.delete(`/api/posts`, {
