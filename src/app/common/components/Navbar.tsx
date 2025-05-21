@@ -52,7 +52,7 @@ export default function NavbarComponent() {
     "Help & Feedback",
   ];
 
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   const handleLogout = async () => {
     const { success, error } = await logout();

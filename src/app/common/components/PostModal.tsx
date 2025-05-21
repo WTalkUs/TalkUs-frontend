@@ -8,23 +8,21 @@ import {
   Form,
   Input,
   Textarea,
-  Select,
-  SelectItem,
   Alert,
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
-import { createPost } from "../../services/posts/create"; 
+import { createPost } from "../../services/posts/create";
 import { useAuth } from "@/app/contexts/AuthProvider";
 
 export default function PostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useAuth(); 
+  const { user } = useAuth();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
+
   // Estados para el manejo de errores y mensajes
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [responseMessage, setResponseMessage] = useState<string>("");
@@ -63,13 +61,13 @@ export default function PostModal() {
         setSuccess(true);
         setError(false);
         setResponseMessage(result.message);
-        
+
         // Limpiar el formulario
         setTitle("");
         setContent("");
         setTag("");
         setImageFile(null);
-        
+
         setTimeout(() => {
           onClose();
           setIsVisible(false);
@@ -112,7 +110,7 @@ export default function PostModal() {
         <ModalContent className="p-8 pt-0 space-y-6">
           <ModalHeader className="h-8 text-2xl font-semibold pt-0 mx-auto">
             Create a Post
-          </ModalHeader>    
+          </ModalHeader>
           {(error || success) && isVisible && (
             <Alert
               isVisible={true}
@@ -121,7 +119,7 @@ export default function PostModal() {
               title={responseMessage}
             />
           )}
-          
+
           <Form onSubmit={handlePost} className="space-y-4">
             <Input
               isRequired

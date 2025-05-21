@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Link,
-} from "@heroui/react";
+import { Avatar, Card } from "@heroui/react";
 import Image from "next/image";
 
 import styles from "../page.module.css";
