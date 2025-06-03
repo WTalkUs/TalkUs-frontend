@@ -15,6 +15,7 @@ import {
 import { FormEvent, useState } from "react";
 import { createPost } from "../../services/posts/create"; 
 import { useAuth } from "@/app/contexts/AuthProvider";
+import { getPostById } from "../../services/posts/getById"; // Import the getPostById function
 
 export default function PostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -93,7 +94,6 @@ export default function PostModal() {
       setIsSubmitting(false);
     }
   };
-
   return (
     <>
       <Button
