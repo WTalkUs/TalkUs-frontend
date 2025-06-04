@@ -5,9 +5,11 @@ import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { app } from "@lib/firebase"; // Asegúrate de exportar tu app desde aquí4
 
 const AuthContext = createContext<{
+  getIdToken(): unknown;
   user: User | null;
   loading: boolean;
 }>({
+  getIdToken: () => Promise.resolve(),
   user: null,
   loading: true,
 });
@@ -26,7 +28,17 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const value = useMemo(() => ({ user, loading }), [user, loading]);
+  const getIdToken = async () => {
+    if (user) {
+      return user.getIdToken();
+    }
+    return null;
+  };
+
+  const value = useMemo(
+    () => ({ user, loading, getIdToken }),
+    [user, loading, user]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -12,35 +12,40 @@ import {
   SelectItem,
   Alert,
 } from "@heroui/react";
-import { FormEvent, useState } from "react";
-import { createPost } from "../../services/posts/create"; 
+import { FormEvent, useEffect, useState } from "react";
+import { editPost } from "../../services/posts/edit";
 import { useAuth } from "@/app/contexts/AuthProvider";
-import { getPostById } from "../../services/posts/getById"; // Import the getPostById function
 
-export default function PostModal() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user } = useAuth(); 
+interface Props {
+  isOpen: boolean;
+  onClose: () => void;
+  post: { id: string; title: string; content: string; imageUrl: string };
+  onSaved?: () => void;
+}
+
+export default function EditPostModal({ isOpen, onClose, post }: Props) {
+  const { user } = useAuth();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
   const [tag, setTag] = useState<string>("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  
+
   // Estados para el manejo de errores y mensajes
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const handlePost = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    if (!title || !content) {
-      setError(true);
-      setResponseMessage("Todos los campos son obligatorios");
-      setIsVisible(true);
-      return;
+  useEffect(() => {
+    if (isOpen) {
+      setTitle(post.title);
+      setContent(post.content);
     }
+  }, [post, isOpen]);
+
+  const handleEditPost = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
     if (!user) {
       setError(true);
@@ -49,14 +54,19 @@ export default function PostModal() {
       return;
     }
 
+    if (!title || !content) {
+      setError(true);
+      setResponseMessage("Todos los campos son obligatorios");
+      setIsVisible(true);
+      return;
+    }
     setIsSubmitting(true);
 
     try {
-      const result = await createPost({
-        author_id: user.uid,
+      const result = await editPost({
+        id: post.id,
         title,
         content,
-        tag: tag || undefined,
         image: imageFile || undefined,
       });
 
@@ -64,13 +74,13 @@ export default function PostModal() {
         setSuccess(true);
         setError(false);
         setResponseMessage(result.message);
-        
+
         // Limpiar el formulario
         setTitle("");
         setContent("");
         setTag("");
         setImageFile(null);
-        
+
         setTimeout(() => {
           onClose();
           setIsVisible(false);
@@ -94,15 +104,9 @@ export default function PostModal() {
       setIsSubmitting(false);
     }
   };
+
   return (
     <>
-      <Button
-        onPress={onOpen}
-        className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2"
-      >
-        Create Post
-      </Button>
-
       <Modal
         size="xl"
         className="shadow-md shadow-fuchsia-500"
@@ -111,8 +115,8 @@ export default function PostModal() {
       >
         <ModalContent className="p-8 pt-0 space-y-6">
           <ModalHeader className="h-8 text-2xl font-semibold pt-0 mx-auto">
-            Create a Post
-          </ModalHeader>    
+            Edit Post
+          </ModalHeader>
           {(error || success) && isVisible && (
             <Alert
               isVisible={true}
@@ -121,8 +125,8 @@ export default function PostModal() {
               title={responseMessage}
             />
           )}
-          
-          <Form onSubmit={handlePost} className="space-y-4">
+
+          <Form onSubmit={handleEditPost} className="space-y-4">
             <Input
               isRequired
               name="title"
@@ -145,20 +149,6 @@ export default function PostModal() {
               onChange={(e) => setContent(e.target.value)}
             />
 
-            {/* <Select
-              name="tags"
-              label="Tag"
-              placeholder="Select a tag"
-              className="!w-full"
-              value={tag}
-              selectionMode="multiple"
-              onValueChange={(val) => setTag(val)}
-            >
-              <SelectItem key="news"      />
-              <SelectItem key="tutorial"  />
-              <SelectItem key="opinion"  />
-            </Select> */}
-
             <Input
               name="image"
               type="file"
@@ -176,7 +166,7 @@ export default function PostModal() {
               className="self-center"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Creating…" : "Submit"}
+              {isSubmitting ? "Editing" : "Submit"}
             </Button>
           </Form>
         </ModalContent>
