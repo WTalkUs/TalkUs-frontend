@@ -1,12 +1,5 @@
 "use client";
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Link,
-} from "@heroui/react";
+import { Avatar, Card } from "@heroui/react";
 import Image from "next/image";
 
 import styles from "../../page.module.css";
@@ -101,36 +94,27 @@ export default function PostDetails(props: {
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
           </div>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+          <p>{post.content}</p>
           <Image
-            src="https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378145/cld-sample-2.jpg"
+            src={post.image_url || ""}
             width={746}
             height={746}
             alt="post image"
             className="rounded-2xl justify-center object-cover size-full col-span-1"
           />
-          <p>651,324 Views</p>
           <div className="flex items-center mt-4">
             <div className="flex justify-start space-x-2 gap-2">
               <div className="flex gap-2">
                 <ThumbUpIcon fontSize="medium" />
-                <span>1,234 Likes</span>
+                <span>{post.likes}</span>
               </div>
               <div className="flex gap-2">
                 <ThumbDownIcon fontSize="medium" />
-                <span>123 Dislikes</span>
+                <span>{post.dislikes}</span>
               </div>
               <div className="flex gap-2">
                 <CommentIcon fontSize="medium" />
-                <span>1,234 Favorites</span>
+                <span>0</span>
               </div>
             </div>
             <div className="flex justify-end ml-auto">
