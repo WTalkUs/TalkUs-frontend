@@ -89,14 +89,14 @@ export default function PostDetails(props: {
           <div className="grid grid-cols-2">
             <div>
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
-                {post.title}
+                {post.post.title}
               </h2>
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
           </div>
-          <p>{post.content}</p>
+          <p>{post.post.content}</p>
           <Image
-            src={post.image_url || ""}
+            src={post.post.image_url || ""}
             width={746}
             height={746}
             alt="post image"
@@ -106,11 +106,11 @@ export default function PostDetails(props: {
             <div className="flex justify-start space-x-2 gap-2">
               <div className="flex gap-2">
                 <ThumbUpIcon fontSize="medium" />
-                <span>{post.likes}</span>
+                <span>{post.post.likes}</span>
               </div>
               <div className="flex gap-2">
                 <ThumbDownIcon fontSize="medium" />
-                <span>{post.dislikes}</span>
+                <span>{post.post.dislikes}</span>
               </div>
               <div className="flex gap-2">
                 <CommentIcon fontSize="medium" />
