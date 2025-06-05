@@ -4,23 +4,25 @@ import axios, { AxiosError } from "axios";
 import api from "../../lib/axios";
 
 export interface Post {
-  id: string;
   author: {
     email: string;
     password: string;
     uid: string;
     username: string;
   };
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-  tags: string[];
-  is_flagged: boolean;
-  forum_id: string;
-  image_url: string;
-  likes: number;
-  dislikes: number;
+  post: {
+    id: string;
+    title: string;
+    content: string;
+    created_at: string;
+    updated_at: string;
+    tags: string[];
+    is_flagged: boolean;
+    forum_id: string;
+    image_url: string;
+    likes: number;
+    dislikes: number;
+  };
 }
 
 interface GetPostSuccessResponse {
