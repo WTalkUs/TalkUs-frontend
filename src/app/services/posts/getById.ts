@@ -1,11 +1,16 @@
-"use client"
+"use client";
 
 import axios, { AxiosError } from "axios";
 import api from "../../lib/axios";
 
 export interface Post {
   id: string;
-  author_id: string;
+  author: {
+    email: string;
+    password: string;
+    uid: string;
+    username: string;
+  };
   title: string;
   content: string;
   created_at: string;
@@ -59,4 +64,4 @@ export const getPostById = async (id: string): Promise<GetPostResponse> => {
       error: (error as Error).message || "Error desconocido",
     };
   }
-}
+};
