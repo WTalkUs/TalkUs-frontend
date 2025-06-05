@@ -82,7 +82,7 @@ export default function PostDetails(props: {
             />
             <div className="flex flex-col">
               <span className="text-default-900 font-semibold">
-                Nombre del autor
+                {post.author.username}
               </span>
             </div>
           </div>
