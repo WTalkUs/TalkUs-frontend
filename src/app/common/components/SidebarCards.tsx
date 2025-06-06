@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, Link, Image } from "@heroui/react";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 
 interface CardItem {
   id: number;
@@ -13,11 +13,7 @@ interface SideBarCardsProps {
   showImage?: boolean;
 }
 
-export default function SideBarCards({
-  title,
-  items = [],
-  showImage = true,
-}: SideBarCardsProps) {
+export default function SideBarCards({ title, items = [] }: SideBarCardsProps) {
   return (
     <Card className="max-w-[400px] p-2 bg-background-2">
       {title && (

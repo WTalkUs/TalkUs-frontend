@@ -1,12 +1,5 @@
 "use client";
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Link,
-} from "@heroui/react";
+import { Avatar, Card } from "@heroui/react";
 import Image from "next/image";
 
 import styles from "../../page.module.css";
@@ -20,36 +13,36 @@ import { useEffect, useState } from "react";
 import { getPostById, Post } from "../../services/posts/getById";
 import React from "react";
 
-export default function PostDetails(props: { params: Promise<{ id: string }> }) {
-
+export default function PostDetails(props: {
+  params: Promise<{ id: string }>;
+}) {
   const { id } = React.use(props.params);
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-
   useEffect(() => {
-  setLoading(true);
-  getPostById(id)
-    .then((resp) => {
-      if (resp.success) {
-        console.log("Post fetched:", resp.data);
-        setPost(resp.data);  
-        setError(null);
-      } else {
-        setError(resp.error);
+    setLoading(true);
+    getPostById(id)
+      .then((resp) => {
+        if (resp.success) {
+          console.log("Post fetched:", resp.data);
+          setPost(resp.data);
+          setError(null);
+        } else {
+          setError(resp.error);
+          setPost(null);
+        }
+      })
+      .catch((err) => {
+        setError(err.message);
         setPost(null);
-      }
-    })
-    .catch((err) => {
-      setError(err.message);
-      setPost(null);
-    })
-    .finally(() => {
-      setLoading(false);
-    });
-}, [id]);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [id]);
 
   console.log("Post details:", post);
 
@@ -89,48 +82,39 @@ export default function PostDetails(props: { params: Promise<{ id: string }> }) 
             />
             <div className="flex flex-col">
               <span className="text-default-900 font-semibold">
-                Nombre del autor
+                {post.author.username}
               </span>
             </div>
           </div>
           <div className="grid grid-cols-2">
             <div>
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
-                {post.title}
+                {post.post.title}
               </h2>
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
           </div>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </p>
+          <p>{post.post.content}</p>
           <Image
-            src="https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378145/cld-sample-2.jpg"
+            src={post.post.image_url || ""}
             width={746}
             height={746}
             alt="post image"
             className="rounded-2xl justify-center object-cover size-full col-span-1"
           />
-          <p>651,324 Views</p>
           <div className="flex items-center mt-4">
             <div className="flex justify-start space-x-2 gap-2">
               <div className="flex gap-2">
                 <ThumbUpIcon fontSize="medium" />
-                <span>1,234 Likes</span>
+                <span>{post.post.likes}</span>
               </div>
               <div className="flex gap-2">
                 <ThumbDownIcon fontSize="medium" />
-                <span>123 Dislikes</span>
+                <span>{post.post.dislikes}</span>
               </div>
               <div className="flex gap-2">
                 <CommentIcon fontSize="medium" />
-                <span>1,234 Favorites</span>
+                <span>0</span>
               </div>
             </div>
             <div className="flex justify-end ml-auto">

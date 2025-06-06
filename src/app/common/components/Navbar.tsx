@@ -26,12 +26,7 @@ import Register from "./Register";
 
 //Assets
 import TalkUs from "../icons/TalkUs.svg";
-import {
-  IconSearch,
-  IconHomeFilled,
-  IconUsersGroup,
-  IconBell,
-} from "@tabler/icons-react";
+import { IconSearch, IconUsersGroup, IconBell } from "@tabler/icons-react";
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { logout } from "@/app/services/auth/logout";
 
@@ -52,7 +47,7 @@ export default function NavbarComponent() {
     "Help & Feedback",
   ];
 
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
 
   const handleLogout = async () => {
     const { success, error } = await logout();
@@ -79,14 +74,19 @@ export default function NavbarComponent() {
       className="w-full fixed bg-background-2 shadow-md"
     >
       <NavbarBrand className="flex items-center gap-4 flex-shrink-0 w-auto">
-        <Image
-          alt="Logo"
-          className="min-w-[30px] min-h-[30px] w-[30px] h-[30px]"
-          height={30}
-          src={TalkUs}
-          width={30}
-        />
-        <p className="hidden sm:flex font-bold text-inherit text-xl">TalkUs</p>
+        <Link href="/" className="flex items-center gap-2 text-inherit">
+          <Image
+            alt="Logo"
+            className="min-w-[30px] min-h-[30px] w-[30px] h-[30px]"
+            height={30}
+            src={TalkUs}
+            width={30}
+          />
+
+          <p className="hidden sm:flex font-bold text-inherit text-xl">
+            TalkUs
+          </p>
+        </Link>
         {user && (
           <Button
             isIconOnly
@@ -95,12 +95,6 @@ export default function NavbarComponent() {
             <IconUsersGroup size={24} className="text-default-500" />
           </Button>
         )}
-        <Button
-          isIconOnly
-          className="bg-background-3 rounded-lg hidden sm:flex"
-        >
-          <IconHomeFilled size={24} className="text-default-500" />
-        </Button>
       </NavbarBrand>
       <NavbarContent justify="center" className="flex-1 lg:flex max-w-3xl px-4">
         <Input

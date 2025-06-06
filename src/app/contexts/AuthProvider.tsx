@@ -1,6 +1,13 @@
 // app/contexts/AuthProvider.tsx
 "use client";
-import { createContext, useContext, useEffect, useState, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useCallback,
+  useEffect,
+  useState,
+  useMemo,
+} from "react";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
 import { app } from "@lib/firebase"; // Asegúrate de exportar tu app desde aquí4
 
@@ -28,16 +35,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return () => unsubscribe();
   }, []);
 
-  const getIdToken = async () => {
+  const getIdToken = useCallback(async () => {
     if (user) {
       return user.getIdToken();
     }
     return null;
-  };
+  }, [user]);
 
   const value = useMemo(
     () => ({ user, loading, getIdToken }),
-    [user, loading, user]
+    [user, loading, getIdToken]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

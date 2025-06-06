@@ -58,7 +58,11 @@ export default function PostCard({
 }: PostCardProps) {
   const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
 
   const handleDelete = async () => {
     if (user) {
@@ -75,7 +79,6 @@ export default function PostCard({
   };
 
   return (
-
     <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
       <div className="grid md:grid-cols-5 gap-4 p-6">
         <Image
@@ -113,15 +116,13 @@ export default function PostCard({
                     </IconButton>
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Static Actions">
-                    <DropdownItem
-                      key="edit"
-                      variant="light"
-                    >
+                    <DropdownItem key="edit" variant="light">
                       <Button
                         className="bg-gradient-to-br from-indigo-500 to-pink-500 w-full"
                         onPress={(e) => {
-                        onOpen();
-                      }}>
+                          onOpen();
+                        }}
+                      >
                         Edit
                       </Button>
                     </DropdownItem>
@@ -129,10 +130,9 @@ export default function PostCard({
                       <Button
                         variant="solid"
                         className="bg-gradient-to-br from-danger-500 to-danger-100 w-full"
-
                         onPress={() => {
-                        onOpenDelete();
-                      }}
+                          onOpenDelete();
+                        }}
                       >
                         Delete
                       </Button>
@@ -194,23 +194,31 @@ export default function PostCard({
         isOpen={isOpen}
         onClose={onClose}
         post={{
-          id, 
+          id,
           title,
           content,
-          imageUrl,}}
+          imageUrl,
+        }}
         onSaved={() => {
           onClose();
         }}
       />
-       <Modal  isOpen={isOpenDelete}
-      onOpenChange={(open) => { if (!open) onCloseDelete(); }}>
+      <Modal
+        isOpen={isOpenDelete}
+        onOpenChange={(open) => {
+          if (!open) onCloseDelete();
+        }}
+      >
         <ModalContent>
           {(open) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Eliminar Post</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Eliminar Post
+              </ModalHeader>
               <ModalBody>
                 <p>
-                  ¿Estás seguro de que deseas eliminar este post? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar este post? Esta acción no
+                  se puede deshacer.
                 </p>
               </ModalBody>
               <ModalFooter>
