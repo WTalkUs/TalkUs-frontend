@@ -72,6 +72,7 @@ export default function PostsList() {
           authorName={post.author.username}
           title={post.title}
           content={post.content}
+          tags={post.tags}
           imageUrl={
             post.image_url
               ? post.image_url

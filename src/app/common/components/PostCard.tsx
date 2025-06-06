@@ -38,6 +38,7 @@ type PostCardProps = {
   content: string;
   imageUrl: string;
   authorId: string;
+  tags: string[];
   createdAt: string;
   likes: number;
   dislikes: number;
@@ -49,6 +50,7 @@ export default function PostCard({
   authorName,
   content,
   authorId,
+  tags,
   imageUrl,
   createdAt,
   likes,
@@ -90,7 +92,7 @@ export default function PostCard({
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {title.length > 44 ? `${title.substring(0, 44)}...` : title}
               </h2>
-              <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
+              <Tags tags={tags} />
             </div>
             </Link> 
             <div className="my-0 items-end max-h-[32px] text-right">
