@@ -38,6 +38,7 @@ type PostCardProps = {
   content: string;
   imageUrl: string;
   authorId: string;
+  tags: string[];
   createdAt: string;
   likes: number;
   dislikes: number;
@@ -49,6 +50,7 @@ export default function PostCard({
   authorName,
   content,
   authorId,
+  tags,
   imageUrl,
   createdAt,
   likes,
@@ -88,14 +90,14 @@ export default function PostCard({
         />
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-[4fr_1fr]">
-            <Link href={`/post-details/${id}`}>
-              <div className="">
-                <h2 className="text-2xl font-semibold text-default-900 mb-2">
-                  {title.length > 44 ? `${title.substring(0, 44)}...` : title}
-                </h2>
-                <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
-              </div>
-            </Link>
+            <Link href={`/postDetails/${id}`}> 
+            <div className="">
+              <h2 className="text-2xl font-semibold text-default-900 mb-2">
+                {title.length > 44 ? `${title.substring(0, 44)}...` : title}
+              </h2>
+              <Tags tags={tags} />
+            </div>
+            </Link> 
             <div className="my-0 items-end max-h-[32px] text-right">
               <IconButton
                 className="cursor-pointer h-32px !pt-0"
