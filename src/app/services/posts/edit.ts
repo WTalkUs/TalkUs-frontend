@@ -7,7 +7,7 @@ interface EditPostData {
   id: string;
   title: string;
   content: string;
-  tag?: string;
+  tag: string[];
   image?: File;
 }
 
@@ -35,6 +35,10 @@ export const editPost = async (
     const formData = new FormData();
     formData.append("title", data.title);
     formData.append("content", data.content);
+
+    if (data.tag) {
+      formData.append('tags', JSON.stringify(data.tag));
+    }
     if (data.image) {
       formData.append("image", data.image, data.image.name);
     }

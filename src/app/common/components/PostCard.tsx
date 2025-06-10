@@ -23,7 +23,7 @@ import EditPostModal from "./EditPostModal";
 
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
-import { editPost } from "@/app/services/posts/edit";
+import {reactToPost} from "@/app/services/posts/react";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { IconButton } from "@mui/material";
@@ -77,6 +77,28 @@ export default function PostCard({
     }
     onCloseDelete();
   };
+
+  const handleReactPost = async (action: "like" | "dislike") => {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const payload = {
+      postId: id,
+      Type: action,
+      userId: user.uid,
+    };
+    try {
+      const result = await reactToPost(payload);
+      if (result.success) {
+        console.log(`Post ${action}d successfully`);
+      } else {
+        console.error(`Error ${action}ing post:`, result.error);
+      }
+    } catch (error) {
+      console.error("Error reacting to post:", error);
+    }
+  }
 
   return (
     <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
@@ -171,14 +193,14 @@ export default function PostCard({
             <div className="flex justify-end mt-4">
               <Button
                 size="sm"
-                onClick={() => console.log(`Liked post ${id}`)}
+                onClick={() => handleReactPost("like")}
                 className="bg-transparent border-none cursor-pointer"
               >
                 <ThumbUpIcon fontSize="small" /> {likes}
               </Button>
               <Button
                 size="sm"
-                onClick={() => console.log(`Disliked post ${id}`)}
+                onClick={() => handleReactPost("dislike")}
                 className="bg-transparent border-none cursor-pointer"
               >
                 <ThumbDownIcon fontSize="small" /> {dislikes}
@@ -194,6 +216,7 @@ export default function PostCard({
         isOpen={isOpen}
         onClose={onClose}
         post={{
+          tag: tags,
           id,
           title,
           content,

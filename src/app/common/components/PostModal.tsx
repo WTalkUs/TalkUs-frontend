@@ -94,9 +94,7 @@ export default function PostModal() {
     }
   };
 
-  // Fix for handling multiple tag selection
   const handleTagsChange = (keys: any) => {
-    // Convert the Set or similar structure to an array
     const selectedTags = Array.from(keys) as string[];
     setTags(selectedTags);
   };
