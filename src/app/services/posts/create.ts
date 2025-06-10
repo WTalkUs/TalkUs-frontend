@@ -7,7 +7,7 @@ interface CreatePostData {
   author_id: string;
   title: string;
   content: string;
-  tag?: string;
+  tag: string[];
   image?: File;
 }
 
@@ -25,6 +25,7 @@ interface CreatePostErrorResponse {
 
 type CreatePostResponse = CreatePostSuccessResponse | CreatePostErrorResponse;
 
+
 export const createPost = async (postData: CreatePostData): Promise<CreatePostResponse> => {
   try {
     const formData = new FormData();
@@ -33,7 +34,7 @@ export const createPost = async (postData: CreatePostData): Promise<CreatePostRe
     formData.append('content', postData.content);
     
     if (postData.tag) {
-      formData.append('tag', postData.tag);
+      formData.append('tags', JSON.stringify(postData.tag));
     }
     
     if (postData.image) {

@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody, Link, Image } from "@heroui/react";
+import { Card, CardHeader, CardBody } from "@heroui/react";
 
 interface CardItem {
   id: number;
@@ -13,11 +13,7 @@ interface SideBarCardsProps {
   showImage?: boolean;
 }
 
-export default function SideBarCards({
-  title,
-  items = [],
-  showImage = true,
-}: SideBarCardsProps) {
+export default function SideBarCards({ title, items = [] }: SideBarCardsProps) {
   return (
     <Card className="max-w-[400px] p-2 bg-background-2">
       {title && (
@@ -26,26 +22,6 @@ export default function SideBarCards({
         </CardHeader>
       )}
       <CardBody className="flex flex-col gap-3">
-        {/* {showImage && (
-          <div className="flex gap-3 items-center">
-            <Image
-              alt="heroui logo"
-              height={40}
-              radius="sm"
-              src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-              width={40}
-            />
-            <div className="flex flex-col">
-              <p key="title" className="text-md">
-                HeroUI
-              </p>
-              <p key="description" className="text-small text-default-500">
-                heroui.com
-              </p>
-            </div>
-          </div>
-        )} */}
-
         {items.map((item) => (
           <div key={item.id} className="flex flex-col">
             <p className="text-md font-medium">

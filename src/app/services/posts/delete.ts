@@ -18,16 +18,13 @@ export type DeletePostResponse =
   | DeletePostSuccessResponse
   | DeletePostErrorResponse;
 
-export const deletePost = async (
-  id: string
-): Promise<DeletePostResponse> => {
-
+export const deletePost = async (id: string): Promise<DeletePostResponse> => {
   const auth = getAuth();
-  const user = auth.currentUser; 
+  const user = auth.currentUser;
   try {
-    const token = user ? await user.getIdToken() : null ;
-    const response = await api.delete(`/api/posts`, {
-      params: { id },  
+    const token = user ? await user.getIdToken() : null;
+    await api.delete(`/api/posts`, {
+      params: { id },
       headers: {
         Authorization: `Bearer ${token}`,
       },

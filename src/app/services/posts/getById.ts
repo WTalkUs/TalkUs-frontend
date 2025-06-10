@@ -1,21 +1,28 @@
-"use client"
+"use client";
 
 import axios, { AxiosError } from "axios";
 import api from "../../lib/axios";
 
 export interface Post {
-  id: string;
-  author_id: string;
-  title: string;
-  content: string;
-  created_at: string;
-  updated_at: string;
-  tags: string[];
-  is_flagged: boolean;
-  forum_id: string;
-  image_url: string;
-  likes: number;
-  dislikes: number;
+  author: {
+    email: string;
+    password: string;
+    uid: string;
+    username: string;
+  };
+  post: {
+    id: string;
+    title: string;
+    content: string;
+    created_at: string;
+    updated_at: string;
+    tags: string[];
+    is_flagged: boolean;
+    forum_id: string;
+    image_url: string;
+    likes: number;
+    dislikes: number;
+  };
 }
 
 interface GetPostSuccessResponse {
@@ -59,4 +66,4 @@ export const getPostById = async (id: string): Promise<GetPostResponse> => {
       error: (error as Error).message || "Error desconocido",
     };
   }
-}
+};

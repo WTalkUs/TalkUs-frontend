@@ -38,6 +38,7 @@ type PostCardProps = {
   content: string;
   imageUrl: string;
   authorId: string;
+  tags: string[];
   createdAt: string;
   likes: number;
   dislikes: number;
@@ -49,6 +50,7 @@ export default function PostCard({
   authorName,
   content,
   authorId,
+  tags,
   imageUrl,
   createdAt,
   likes,
@@ -56,7 +58,11 @@ export default function PostCard({
 }: PostCardProps) {
   const { user } = useAuth();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { isOpen: isOpenDelete, onOpen: onOpenDelete, onClose: onCloseDelete } = useDisclosure();
+  const {
+    isOpen: isOpenDelete,
+    onOpen: onOpenDelete,
+    onClose: onCloseDelete,
+  } = useDisclosure();
 
   const handleDelete = async () => {
     if (user) {
@@ -73,8 +79,7 @@ export default function PostCard({
   };
 
   return (
-
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
+    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 mt-0">
       <div className="grid md:grid-cols-5 gap-4 p-6">
         <Image
           src={imageUrl}
@@ -85,12 +90,12 @@ export default function PostCard({
         />
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-[4fr_1fr]">
-            <Link href={`/postDetails/${id}`}> 
+            <Link href={`/post-details/${id}`}> 
             <div className="">
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {title.length > 44 ? `${title.substring(0, 44)}...` : title}
               </h2>
-              <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
+              <Tags tags={tags} />
             </div>
             </Link> 
             <div className="my-0 items-end max-h-[32px] text-right">
@@ -111,15 +116,13 @@ export default function PostCard({
                     </IconButton>
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Static Actions">
-                    <DropdownItem
-                      key="edit"
-                      variant="light"
-                    >
+                    <DropdownItem key="edit" variant="light">
                       <Button
                         className="bg-gradient-to-br from-indigo-500 to-pink-500 w-full"
                         onPress={(e) => {
-                        onOpen();
-                      }}>
+                          onOpen();
+                        }}
+                      >
                         Edit
                       </Button>
                     </DropdownItem>
@@ -127,10 +130,9 @@ export default function PostCard({
                       <Button
                         variant="solid"
                         className="bg-gradient-to-br from-danger-500 to-danger-100 w-full"
-
                         onPress={() => {
-                        onOpenDelete();
-                      }}
+                          onOpenDelete();
+                        }}
                       >
                         Delete
                       </Button>
@@ -192,23 +194,31 @@ export default function PostCard({
         isOpen={isOpen}
         onClose={onClose}
         post={{
-          id, 
+          id,
           title,
           content,
-          imageUrl,}}
+          imageUrl,
+        }}
         onSaved={() => {
           onClose();
         }}
       />
-       <Modal  isOpen={isOpenDelete}
-      onOpenChange={(open) => { if (!open) onCloseDelete(); }}>
+      <Modal
+        isOpen={isOpenDelete}
+        onOpenChange={(open) => {
+          if (!open) onCloseDelete();
+        }}
+      >
         <ModalContent>
           {(open) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Eliminar Post</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">
+                Eliminar Post
+              </ModalHeader>
               <ModalBody>
                 <p>
-                  ¿Estás seguro de que deseas eliminar este post? Esta acción no se puede deshacer.
+                  ¿Estás seguro de que deseas eliminar este post? Esta acción no
+                  se puede deshacer.
                 </p>
               </ModalBody>
               <ModalFooter>
