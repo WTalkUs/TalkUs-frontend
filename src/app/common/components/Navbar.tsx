@@ -150,7 +150,7 @@ export default function NavbarComponent() {
               </div>
             </DropdownTrigger>
             <DropdownMenu aria-label="Profile Actions" variant="flat">
-              <DropdownItem key="profile" className="h-14 gap-2">
+              <DropdownItem key="profileMenu" className="h-14 gap-2">
                 <p className="font-semibold">Signed in as</p>
                 <p className="font-semibold">{user.email}</p>
               </DropdownItem>
@@ -159,6 +159,9 @@ export default function NavbarComponent() {
               </DropdownItem>
               <DropdownItem key="groups" className="sm:hidden">
                 Groups
+              </DropdownItem>
+              <DropdownItem key="profile" href="/profile">
+                Profile
               </DropdownItem>
               <DropdownItem key="settings">Settings</DropdownItem>
               <DropdownItem key="notifications" className="md:hidden">

@@ -101,7 +101,7 @@ export default function PostCard({
   }
 
   return (
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
+    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 mt-0">
       <div className="grid md:grid-cols-5 gap-4 p-6">
         <Image
           src={imageUrl}
@@ -112,7 +112,7 @@ export default function PostCard({
         />
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-[4fr_1fr]">
-            <Link href={`/postDetails/${id}`}> 
+            <Link href={`/post-details/${id}`}> 
             <div className="">
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {title.length > 44 ? `${title.substring(0, 44)}...` : title}
