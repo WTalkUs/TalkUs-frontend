@@ -7,7 +7,7 @@ import { useAuth } from "@/app/contexts/AuthProvider";
 export default function SideBar() {
   const { user } = useAuth();
   return (
-    <div className="fixed left-0 top-[75px] ml-4 space-y-5 hidden lg:block">
+    <div className="fixed left-0 top-[75px] ml-4 space-y-5 hidden min-[1450px]:block">
       <SideBarCards items={mockDataMain} />
       {user ? (
         <SideBarCards title="Pinned Groups" items={mockDataGroup} />

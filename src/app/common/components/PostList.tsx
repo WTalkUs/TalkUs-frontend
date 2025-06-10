@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-import { CircularProgress } from "@heroui/react";
-import { getAllPosts } from "../../services/posts/getAll"; 
+import { Card, Skeleton } from "@heroui/react";
+import { getAllPosts } from "../../services/posts/getAll";
+import PostSkeletonLoading from "./PostSkeletonLoading";
 
 type PostUser = {
   uid: string;
   email: string;
   password: string;
   username: string;
-}
+};
 
 type Post = {
   id: string;
@@ -37,7 +38,7 @@ export default function PostsList() {
     const fetchPosts = async () => {
       setLoading(true);
       const result = await getAllPosts();
-      
+
       if (result.success) {
         setPosts(
           result.data.map((post: any) => ({
@@ -56,15 +57,14 @@ export default function PostsList() {
       }
       setLoading(false);
     };
-    
+
     fetchPosts();
   }, []);
-  if (loading)
-    return <CircularProgress aria-label="Loading..." color="secondary" />;
+  if (loading) return <PostSkeletonLoading />;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (posts.length === 0) return <p>No hay publicaciones</p>;
   return (
-    <div className="mt-0">
+    <div>
       {posts.map((post) => (
         <PostCard
           key={post.id}

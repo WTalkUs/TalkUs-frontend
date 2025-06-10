@@ -72,7 +72,7 @@ export default function PostDetails(props: {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Card className="w-full max-w-[770px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 p-6 space-y-2">
+        <Card className="w-full max-w-[770px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 p-6 space-y-4">
           <div className="col-span-3 flex flex-col md:flex-row md:items-center gap-2">
             <Avatar
               isBordered
@@ -94,14 +94,19 @@ export default function PostDetails(props: {
               <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
             </div>
           </div>
-          <p>{post.post.content}</p>
-          <Image
-            src={post.post.image_url || ""}
-            width={746}
-            height={746}
-            alt="post image"
-            className="rounded-2xl justify-center object-cover size-full col-span-1"
-          />
+          <p className="text-default-900 text-lg pt-3 pb-3">
+            {post.post.content}
+          </p>
+          {post.post.image_url && (
+            <Image
+              src={post.post.image_url}
+              width={746}
+              height={746}
+              priority
+              alt="post image"
+              className="rounded-2xl justify-center object-cover size-full col-span-1"
+            />
+          )}
           <div className="flex items-center mt-4">
             <div className="flex justify-start space-x-2 gap-2">
               <div className="flex gap-2">
