@@ -90,7 +90,7 @@ export default function PostCard({
         />
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-[4fr_1fr]">
-            <Link href={`/postDetails/${id}`}> 
+            <Link href={`/post-details/${id}`}> 
             <div className="">
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {title.length > 44 ? `${title.substring(0, 44)}...` : title}
