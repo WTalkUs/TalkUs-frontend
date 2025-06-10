@@ -1,12 +1,18 @@
+# Usa la imagen oficial de Node.js 22 con Alpine Linux (ligera)
 FROM node:22-alpine
 
+# Crea el directorio de la aplicación
 RUN mkdir -p /app
 
+# Establece el directorio de trabajo
 WORKDIR /app
 
+# Copia el archivo package.json para instalar dependencias
 COPY package.json ./
+# Instala las dependencias
 RUN npm install
 
+# Copia todos los archivos del proyecto al contenedor
 COPY . .
 
 ARG NEXT_PUBLIC_FIREBASE_API_KEY
@@ -27,8 +33,13 @@ ENV NEXT_PUBLIC_FIREBASE_APP_ID=$NEXT_PUBLIC_FIREBASE_APP_ID
 ENV NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=$NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
+# Compila la aplicación sin ejecutar el linter
 RUN npm run build:no-lint
 
+# Expone el puerto 3000 para acceder a la aplicación
 EXPOSE 3000
 
+# Comando para iniciar la aplicación cuando el contenedor se ejecute
 CMD ["npm", "run", "start"]
+
+
