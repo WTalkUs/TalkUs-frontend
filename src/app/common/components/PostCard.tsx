@@ -79,7 +79,7 @@ export default function PostCard({
   };
 
   return (
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 mt-0">
+    <Card className="w-full bg-background-1 shadow-md rounded-lg border border-default-200">
       <div className="grid md:grid-cols-5 gap-4 p-6">
         <Image
           src={imageUrl}

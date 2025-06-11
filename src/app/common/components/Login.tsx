@@ -14,7 +14,7 @@ import { loginAndGetToken } from "@services/auth/login";
 import Image from "next/image";
 import { parseFirebaseAuthError } from "@lib/baseAuthError";
 
-export default function LoginPage() {
+export default function LoginModal() {
   const [token, setToken] = useState<string | null>(null);
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [errors, setErrors] = useState<string | null>(null);
