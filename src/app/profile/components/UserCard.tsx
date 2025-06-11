@@ -12,7 +12,7 @@ type UserCardProps = {
 
 export default function UserCard({ authorName, imageUrl }: UserCardProps) {
   return (
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6">
+    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
       <div className="relative">
         <div className="h-[250px] w-full relative overflow-hidden rounded-t-lg">
           <Image
