@@ -30,6 +30,7 @@ import { IconButton } from "@mui/material";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useState } from "react";
 
 type PostCardProps = {
   id: string;
@@ -43,6 +44,8 @@ type PostCardProps = {
   likes: number;
   dislikes: number;
 };
+
+type Reaction = "like" | "dislike" | null;
 
 export default function PostCard({
   id,
@@ -63,6 +66,9 @@ export default function PostCard({
     onOpen: onOpenDelete,
     onClose: onCloseDelete,
   } = useDisclosure();
+
+  const [reaction, setReaction] = useState<Reaction>(null);
+  const [counts, setCounts] = useState({ likes, dislikes });
 
   const handleDelete = async () => {
     if (user) {
@@ -121,12 +127,14 @@ export default function PostCard({
             </div>
             </Link> 
             <div className="my-0 items-end max-h-[32px] text-right">
-              <IconButton
-                className="cursor-pointer h-32px !pt-0"
-                color="inherit"
-              >
-                <FavoriteIcon fontSize="medium" />
-              </IconButton>
+              {user ? (
+                <IconButton
+                  className="cursor-pointer h-32px !pt-0"
+                  color="inherit"
+                >
+                  <FavoriteIcon fontSize="medium" />
+                </IconButton>
+              ) : null}
               {user?.uid === authorId ? (
                 <Dropdown className="!min-w-[140px]">
                   <DropdownTrigger>
@@ -190,7 +198,8 @@ export default function PostCard({
                 </span>
               </div>
             </div>
-            <div className="flex justify-end mt-4">
+            {user ? (
+              <div className="flex justify-end mt-4">
               <Button
                 size="sm"
                 onClick={() => handleReactPost("like")}
@@ -208,7 +217,8 @@ export default function PostCard({
               {/* <Link color="foreground" href="#">
                 Comentarios
               </Link> */}
-            </div>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
