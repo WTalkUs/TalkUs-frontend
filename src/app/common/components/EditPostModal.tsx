@@ -8,6 +8,8 @@ import {
   Input,
   Textarea,
   Alert,
+  Select,
+  SelectItem,
 } from "@heroui/react";
 import { FormEvent, useEffect, useState } from "react";
 import { editPost } from "../../services/posts/edit";
@@ -16,7 +18,7 @@ import { useAuth } from "@/app/contexts/AuthProvider";
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  post: { id: string; title: string; content: string; imageUrl: string };
+  post: { id: string; title: string; content: string; tag: string[] ; imageUrl: string };
   onSaved?: () => void;
 }
 
@@ -24,7 +26,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
   const { user } = useAuth();
   const [title, setTitle] = useState<string>("");
   const [content, setContent] = useState<string>("");
-  const [tag, setTag] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
@@ -38,6 +40,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
     if (isOpen) {
       setTitle(post.title);
       setContent(post.content);
+      setTags(post.tag || []);
     }
   }, [post, isOpen]);
 
@@ -51,7 +54,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
       return;
     }
 
-    if (!title || !content) {
+    if (!title || !content || tags.length === 0) {
       setError(true);
       setResponseMessage("Todos los campos son obligatorios");
       setIsVisible(true);
@@ -63,6 +66,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
       const result = await editPost({
         id: post.id,
         title,
+        tag: tags,
         content,
         image: imageFile || undefined,
       });
@@ -75,7 +79,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
         // Limpiar el formulario
         setTitle("");
         setContent("");
-        setTag("");
+        setTags([]);
         setImageFile(null);
 
         setTimeout(() => {
@@ -100,6 +104,11 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleTagsChange = (keys: any) => {
+    const selectedTags = Array.from(keys) as string[];
+    setTags(selectedTags);
   };
 
   return (
@@ -145,6 +154,29 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
               value={content}
               onChange={(e) => setContent(e.target.value)}
             />
+
+            <Select
+              name="tags"
+              label="Tag"
+              placeholder="Select a tag"
+              className="!w-full"
+              selectedKeys={new Set(tags)}
+              selectionMode="multiple"
+              onSelectionChange={handleTagsChange}
+            >
+              <SelectItem key="Tecnología">Tecnología</SelectItem>
+              <SelectItem key="Salud">Salud</SelectItem>
+              <SelectItem key="Educación">Educación</SelectItem>
+              <SelectItem key="Entretenimiento">Entretenimiento</SelectItem>
+              <SelectItem key="Deportes">Deportes</SelectItem>
+              <SelectItem key="Ciencia">Ciencia</SelectItem>
+              <SelectItem key="Arte">Arte</SelectItem>
+              <SelectItem key="Negocios">Negocios</SelectItem>
+              <SelectItem key="Viajes">Viajes</SelectItem>
+              <SelectItem key="Política">Política</SelectItem>
+              <SelectItem key="Cultura">Cultura</SelectItem>
+              <SelectItem key="Estilo de vida">Estilo de vida</SelectItem>
+            </Select>
 
             <Input
               name="image"
