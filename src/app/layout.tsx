@@ -32,11 +32,18 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable}` + ""}>
         <MainProvider>
           <Navbar />
-          <SideBar />
-          {children}
+          <div className="grid xl:grid-cols-6">
+            <div className="xl:col-span-1 hidden xl:block overflow-y-auto scrollbar-hide">
+              <SideBar />
+            </div>
+            <div className="self-start col-span-5">
+              {children}
+            </div>
+
+          </div>
         </MainProvider>
       </body>
     </html>

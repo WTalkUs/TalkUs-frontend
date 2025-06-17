@@ -1,4 +1,3 @@
-"use client";
 import axios, { AxiosError } from 'axios';
 import api from '../../lib/axios';
 

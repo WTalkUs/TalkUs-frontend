@@ -24,13 +24,14 @@ import EditPostModal from "./EditPostModal";
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
 import {reactToPost} from "@/app/services/posts/react";
+import { getUserVote } from "@/app/services/votes/getByUserId";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { IconButton } from "@mui/material";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type PostCardProps = {
   id: string;
@@ -70,6 +71,24 @@ export default function PostCard({
   const [reaction, setReaction] = useState<Reaction>(null);
   const [counts, setCounts] = useState({ likes, dislikes });
 
+   useEffect(() => {
+  if (!user) return; 
+  const fetchVote = async () => {
+    const resp = await getUserVote(id);
+    if (resp.success) {
+      setReaction(resp.data.type);      
+    } else if (resp.error === "not_found") {
+      setReaction(null);               
+    } else {
+      console.error("Error fetching vote:", resp.error);
+      setReaction(null);
+    }
+  };
+  fetchVote();
+}, [id, user]);
+
+
+
   const handleDelete = async () => {
     if (user) {
       const result = await deletePost(id);
@@ -85,29 +104,50 @@ export default function PostCard({
   };
 
   const handleReactPost = async (action: "like" | "dislike") => {
-    if (!user) {
-      console.error("User not authenticated");
-      return;
-    }
-    const payload = {
-      postId: id,
-      Type: action,
-      userId: user.uid,
-    };
-    try {
-      const result = await reactToPost(payload);
-      if (result.success) {
-        console.log(`Post ${action}d successfully`);
-      } else {
-        console.error(`Error ${action}ing post:`, result.error);
-      }
-    } catch (error) {
-      console.error("Error reacting to post:", error);
-    }
+  if (!user) {
+    console.error("User not authenticated");
+    return;
   }
+  const isToggleOff = reaction === action;
+
+  setCounts(({ likes: L, dislikes: D }) => {
+    let likes = L, dislikes = D;
+
+    if (reaction === "like") likes--;
+    if (reaction === "dislike") dislikes--;
+
+    // si no es toggle-off, suma la nueva
+    if (!isToggleOff) {
+      if (action === "like") likes++;
+      else dislikes++;
+    }
+
+    return { likes, dislikes };
+  });
+
+  // Ajusta el estado de reacción local
+  setReaction(isToggleOff ? null : action);
+
+  const payload = {
+    postId: id,
+    Type: action,
+    userId: user.uid,
+  };
+
+  try {
+    const result = await reactToPost(payload);
+    if (!result.success) {
+      console.error(`Error ${action}ing post:`, result.error);
+    }
+  } catch (error) {
+    console.error("Error reacting to post:", error);
+  }
+};
+
+  
 
   return (
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 mt-0">
+    <Card className="w-full bg-background-1 shadow-md rounded-lg border border-default-200">
       <div className="grid md:grid-cols-5 gap-4 p-6">
         <Image
           src={imageUrl}
@@ -205,18 +245,15 @@ export default function PostCard({
                 onClick={() => handleReactPost("like")}
                 className="bg-transparent border-none cursor-pointer"
               >
-                <ThumbUpIcon fontSize="small" /> {likes}
+                <ThumbUpIcon fontSize="small" color={reaction === "like" ? "secondary" : "inherit"}/> {counts.likes}
               </Button>
               <Button
                 size="sm"
                 onClick={() => handleReactPost("dislike")}
                 className="bg-transparent border-none cursor-pointer"
               >
-                <ThumbDownIcon fontSize="small" /> {dislikes}
+                <ThumbDownIcon fontSize="small" color={reaction === "dislike" ? "secondary" : "inherit"}/> {counts.dislikes}
               </Button>
-              {/* <Link color="foreground" href="#">
-                Comentarios
-              </Link> */}
               </div>
             ) : null}
           </div>

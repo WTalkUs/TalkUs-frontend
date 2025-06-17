@@ -64,7 +64,7 @@ export default function PostsList() {
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
   if (posts.length === 0) return <p>No hay publicaciones</p>;
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       {posts.map((post) => (
         <PostCard
           key={post.id}
