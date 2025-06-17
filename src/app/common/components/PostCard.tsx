@@ -25,6 +25,7 @@ import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
 import {reactToPost} from "@/app/services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
+import type { ReactPostData } from "@/app/services/posts/react";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { IconButton } from "@mui/material";
@@ -46,7 +47,7 @@ type PostCardProps = {
   dislikes: number;
 };
 
-type Reaction = "like" | "dislike" | null;
+type Reaction = "like" | "dislike" | "none";
 
 export default function PostCard({
   id,
@@ -68,7 +69,7 @@ export default function PostCard({
     onClose: onCloseDelete,
   } = useDisclosure();
 
-  const [reaction, setReaction] = useState<Reaction>(null);
+  const [reaction, setReaction] = useState<Reaction>("none");
   const [counts, setCounts] = useState({ likes, dislikes });
 
    useEffect(() => {
@@ -78,10 +79,10 @@ export default function PostCard({
     if (resp.success) {
       setReaction(resp.data.type);      
     } else if (resp.error === "not_found") {
-      setReaction(null);               
+      setReaction("none");               
     } else {
       console.error("Error fetching vote:", resp.error);
-      setReaction(null);
+      setReaction("none");
     }
   };
   fetchVote();
@@ -126,11 +127,11 @@ export default function PostCard({
   });
 
   // Ajusta el estado de reacción local
-  setReaction(isToggleOff ? null : action);
+  setReaction(isToggleOff ? "none" : action);
 
-  const payload = {
+  const payload : ReactPostData ={
     postId: id,
-    Type: action,
+    type: isToggleOff ? "none" : action,
     userId: user.uid,
   };
 

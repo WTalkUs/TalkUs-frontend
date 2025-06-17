@@ -4,9 +4,9 @@ import axios, { AxiosError } from "axios";
 import api from "../../lib/axios";
 import { getAuth } from "firebase/auth";
 
-interface ReactPostData {
+export interface ReactPostData {
   postId: string;
-  Type: "like" | "dislike";
+  type: "like" | "dislike" | "none";
   userId: string;
 }
 
@@ -31,7 +31,7 @@ data: ReactPostData): Promise<ReactPostResponse> => {
     const token = user ? await user.getIdToken() : null;
     const response = await api.post(
       `/api/posts/${data.postId}/react`,
-      { Type: data.Type ,
+      { type: data.type ,
         userId: data.userId
       },
       {

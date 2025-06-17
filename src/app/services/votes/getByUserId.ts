@@ -8,7 +8,7 @@ interface GetUserVoteSuccess {
     vote_id: string;
     user_id: string;
     post_id: string;
-    type: "like" | "dislike";
+    type: "like" | "dislike" | "none";
     created_at: string;
     updated_at: string;
   };
