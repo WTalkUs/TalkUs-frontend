@@ -36,7 +36,7 @@ export default function Profile() {
             size="lg"
             aria-label="Dynamic tabs"
             items={tabs}
-            className="ml-6"
+            className="mt-2 ml-4"
           >
             {(item) => (
               <Tab key={item.id} title={item.label}>
