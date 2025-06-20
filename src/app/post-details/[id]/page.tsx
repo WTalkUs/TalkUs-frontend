@@ -1,6 +1,7 @@
 "use client";
-import { Avatar, Card } from "@heroui/react";
+import { Avatar, Button, Card } from "@heroui/react";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
 
 import styles from "../../page.module.css";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -9,18 +10,26 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import Tags from "../../common/components/Tags";
 
-import { useEffect, useState } from "react";
 import { getPostById, Post } from "../../services/posts/getById";
-import React from "react";
+import { useAuth } from "@/app/contexts/AuthProvider";
+import { ReactPostData } from "../../services/posts/react";
+import { getUserVote } from "@/app/services/votes/getByUserId";
+import { reactToPost } from "../../services/posts/react";
+
+type Reaction = "like" | "dislike" | "none";
 
 export default function PostDetails(props: {
   params: Promise<{ id: string }>;
 }) {
   const { id } = React.use(props.params);
+  const { user } = useAuth();
 
   const [post, setPost] = useState<Post | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [reaction, setReaction] = useState<Reaction>("none");
+  const [counts, setCounts] = useState({ likes: 0, dislikes: 0 });
 
   useEffect(() => {
     setLoading(true);
@@ -44,7 +53,63 @@ export default function PostDetails(props: {
       });
   }, [id]);
 
-  console.log("Post details:", post);
+  useEffect(() => {
+    if (!user) return;
+    const fetchVote = async () => {
+      const resp = await getUserVote(id);
+      if (resp.success) {
+        setReaction(resp.data.type);
+      } else if (resp.error === "not_found") {
+        setReaction("none");
+      } else {
+        console.error("Error fetching vote:", resp.error);
+        setReaction("none");
+      }
+    };
+    fetchVote();
+  }, [id, user]);
+
+  const handleReactPost = async (action: "like" | "dislike") => {
+    if (!user) {
+      console.error("User not authenticated");
+      return;
+    }
+    const isToggleOff = reaction === action;
+
+    setCounts(({ likes: L, dislikes: D }) => {
+      let likes = L,
+        dislikes = D;
+
+      if (reaction === "like") likes--;
+      if (reaction === "dislike") dislikes--;
+
+      // si no es toggle-off, suma la nueva
+      if (!isToggleOff) {
+        if (action === "like") likes++;
+        else dislikes++;
+      }
+
+      return { likes, dislikes };
+    });
+
+    // Ajusta el estado de reacción local
+    setReaction(isToggleOff ? "none" : action);
+
+    const payload: ReactPostData = {
+      postId: id,
+      type: isToggleOff ? "none" : action,
+      userId: user.uid,
+    };
+
+    try {
+      const result = await reactToPost(payload);
+      if (!result.success) {
+        console.error(`Error ${action}ing post:`, result.error);
+      }
+    } catch (error) {
+      console.error("Error reacting to post:", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -91,7 +156,7 @@ export default function PostDetails(props: {
               <h2 className="text-2xl font-semibold text-default-900 mb-2">
                 {post.post.title}
               </h2>
-              <Tags tags={["Ciencia", "Programacion", "Literatura"]} />
+              <Tags tags={post.post.tags} />
             </div>
           </div>
           <p className="text-default-900 text-lg pt-3 pb-3">
@@ -107,20 +172,36 @@ export default function PostDetails(props: {
               className="rounded-2xl justify-center object-cover size-full col-span-1"
             />
           )}
-          <div className="flex items-center mt-4">
-            <div className="flex justify-start space-x-2 gap-2">
-              <div className="flex gap-2">
-                <ThumbUpIcon fontSize="medium" />
-                <span>{post.post.likes}</span>
-              </div>
-              <div className="flex gap-2">
-                <ThumbDownIcon fontSize="medium" />
-                <span>{post.post.dislikes}</span>
-              </div>
-              <div className="flex gap-2">
-                <CommentIcon fontSize="medium" />
-                <span>0</span>
-              </div>
+          <div className="flex justify-between space-x-2 gap-2">
+            <div className="flex gap-2">
+              {user ? (
+                <div className="flex gap-3 items-center">
+                  <div
+                    onClick={() => handleReactPost("like")}
+                    className="flex items-center gap-2 cursor-pointer hover:opacity-70"
+                  >
+                    <ThumbUpIcon
+                      fontSize="medium"
+                      color={reaction === "like" ? "secondary" : "inherit"}
+                    />
+                    <span>{post.post.likes + counts.likes}</span>
+                  </div>
+                  <div
+                    onClick={() => handleReactPost("dislike")}
+                    className="flex items-center gap-2 cursor-pointer hover:opacity-70"
+                  >
+                    <ThumbDownIcon
+                      fontSize="medium"
+                      color={reaction === "dislike" ? "secondary" : "inherit"}
+                    />
+                    <span>{post.post.dislikes + counts.dislikes}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <CommentIcon fontSize="medium" />
+                    <span>0</span>
+                  </div>
+                </div>
+              ) : null}
             </div>
             <div className="flex justify-end ml-auto">
               <BookmarkIcon fontSize="medium" />

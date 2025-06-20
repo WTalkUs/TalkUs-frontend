@@ -18,7 +18,7 @@ import {
   addToast,
 } from "@heroui/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 //Components
 import Login from "./Login";
@@ -29,9 +29,13 @@ import TalkUs from "../icons/TalkUs.svg";
 import { IconSearch, IconUsersGroup, IconBell } from "@tabler/icons-react";
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { logout } from "@/app/services/auth/logout";
+import { getUserById } from "@/app/services/auth/getById";
 
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [displayName, setDisplayName] = useState<string>("");
+  const [photoProfile, setPhotoProfile] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const getItemColor = (item: string) => {
     if (item === "Log Out") return "danger";
@@ -47,7 +51,24 @@ export default function NavbarComponent() {
     "Help & Feedback",
   ];
 
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      // Solo intentar cargar datos si el usuario está autenticado y no estamos cargando
+      if (user && !authLoading) {
+        setIsLoading(true);
+        const result = await getUserById();
+        if (result.success && result.data) {
+          setDisplayName(result.data.username);
+          setPhotoProfile(result.data.profile_photo);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [user, authLoading]);
 
   const handleLogout = async () => {
     const { success, error } = await logout();
@@ -140,12 +161,12 @@ export default function NavbarComponent() {
                   isBordered
                   className="transition-transform"
                   color="secondary"
-                  name="Jason Hughes"
+                  name={displayName}
                   size="sm"
-                  src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
+                  src={photoProfile}
                 />
                 <p className="font-bold text-inherit text-lg pl-2 hidden sm:flex">
-                  {user.displayName}
+                  {displayName}
                 </p>
               </div>
             </DropdownTrigger>

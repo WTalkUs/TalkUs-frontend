@@ -145,8 +145,6 @@ export default function PostCard({
   }
 };
 
-  
-
   return (
     <Card className="w-full bg-background-1 shadow-md rounded-lg border border-default-200">
       <div className="grid md:grid-cols-5 gap-4 p-6">
