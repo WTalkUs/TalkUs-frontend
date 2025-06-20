@@ -9,16 +9,17 @@ import {
   Input,
   Avatar,
 } from "@heroui/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import { editProfile } from "@/app/services/auth/edit";
+import { getUserById } from "@/app/services/auth/getById";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
-  onSaved?: () => void;
 }
 
-export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
+export default function EditProfileModal({ isOpen, onClose }: Props) {
   const { user } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [displayName, setDisplayName] = useState<string>(
@@ -35,18 +36,6 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
   const [error, setError] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const handlePhotoFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setPhotoFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPhotoPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
   const handleEditProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
@@ -59,29 +48,35 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
 
     if (!displayName.trim()) {
       setError(true);
-      setResponseMessage("Por favor ingresa un nombre de usuario");
+      setResponseMessage("Please enter a username");
       setIsVisible(true);
       return;
     }
 
+    // Removemos la validación obligatoria de la foto para permitir actualizar solo el nombre
     setIsSubmitting(true);
+
     try {
-      // Aquí iría la lógica para actualizar el perfil
-      // const result = await editProfile({
-      //   displayName: displayName.trim(),
-      //   photoURL: photoFile ? await uploadPhoto(photoFile) : user.photoURL,
-      // });
+      const result = await editProfile({
+        displayName,
+        photo: photoFile || undefined,
+      });
 
-      // Simulación de respuesta exitosa
-      setSuccess(true);
-      setError(false);
-      setResponseMessage("Perfil actualizado exitosamente");
+      if (result.success) {
+        setSuccess(true);
+        setError(false);
+        setResponseMessage(result.message);
 
-      setTimeout(() => {
-        onClose();
-        setIsVisible(false);
-        onSaved?.();
-      }, 1500);
+        setTimeout(() => {
+          onClose();
+          setIsVisible(false);
+        }, 1500);
+      } else {
+        setError(true);
+        setSuccess(false);
+        setResponseMessage(`Error: ${result.error}`);
+        setIsVisible(true);
+      }
     } catch (error: unknown) {
       setError(true);
       setSuccess(false);
@@ -116,7 +111,7 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
       >
         <ModalContent className="p-6 pt-0 space-y-6">
           <ModalHeader className="h-8 text-xl font-semibold pt-0 mx-auto">
-            Editar Perfil
+            Edit Profile
           </ModalHeader>
 
           {(error || success) && isVisible && (
@@ -131,7 +126,7 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
           <Form onSubmit={handleEditProfile} className="space-y-6">
             {/* Foto de perfil */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium">Foto de Perfil</h3>
+              <h3 className="text-lg font-medium">Profile Photo</h3>
               <div className="flex items-center gap-4">
                 <Avatar
                   src={photoPreview}
@@ -141,13 +136,15 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
                 />
                 <div className="flex-1">
                   <Input
-                    name="photoURL"
-                    label="Foto de Perfil"
+                    name="photo"
+                    label="Profile Photo"
                     type="file"
-                    accept="image/*"
-                    description="Sube una imagen para tu perfil (JPG, PNG, GIF). Recomendado: 200x200px"
+                    description="Upload an image for your profile."
                     className="!w-full"
-                    onChange={handlePhotoFileChange}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setPhotoFile(file);
+                    }}
                   />
                 </div>
               </div>
@@ -155,17 +152,17 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
 
             {/* Nombre de usuario */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium">Información Personal</h3>
+              <h3 className="text-lg font-medium">Personal Information</h3>
               <Input
                 isRequired
                 name="displayName"
-                label="Nombre de Usuario"
-                placeholder="Ingresa tu nombre de usuario"
+                label="Username"
+                placeholder="Enter your username"
                 type="text"
                 className="!w-full"
                 value={displayName}
                 onChange={(e) => setDisplayName(e.target.value)}
-                description="Este será tu nombre visible en la aplicación"
+                description="This will be your visible name in the application"
               />
             </div>
 
@@ -177,7 +174,7 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
                 onPress={handleClose}
                 disabled={isSubmitting}
               >
-                Cancelar
+                Cancel
               </Button>
               <Button
                 type="submit"
@@ -185,7 +182,7 @@ export default function EditProfileModal({ isOpen, onClose, onSaved }: Props) {
                 className="flex-1"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Actualizando..." : "Actualizar Perfil"}
+                {isSubmitting ? "Updating..." : "Update Profile"}
               </Button>
             </div>
           </Form>

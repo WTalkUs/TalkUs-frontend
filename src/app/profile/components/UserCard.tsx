@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Button,
-  Card,
-  Dropdown,
-  DropdownTrigger,
-  DropdownMenu,
-  DropdownItem,
-} from "@heroui/react";
+import { Avatar, Button, Card } from "@heroui/react";
 
 import PostModal from "@/app/common/components/PostModal";
 import Image from "next/image";
@@ -16,18 +8,62 @@ import EditEmailModal from "./EditEmailModal";
 import ChangePasswordModal from "./ChangePasswordModal";
 import EditProfileModal from "./EditProfileModal";
 import EditBannerModal from "./EditBannerModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getUserById } from "@/app/services/auth/getById";
+import { useAuth } from "@/app/contexts/AuthProvider";
 
-type UserCardProps = {
-  authorName: string;
-  imageUrl: string;
-};
-
-export default function UserCard({ authorName, imageUrl }: UserCardProps) {
+export default function UserCard() {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [isEditBannerOpen, setIsEditBannerOpen] = useState(false);
   const [isEditEmailOpen, setIsEditEmailOpen] = useState(false);
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
+
+  const [displayName, setDisplayName] = useState<string>("");
+  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const { user, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      // Solo intentar cargar datos si el usuario está autenticado y no estamos cargando
+      if (user && !authLoading) {
+        setIsLoading(true);
+        const result = await getUserById();
+        if (result.success && result.data) {
+          setDisplayName(result.data.username);
+          setPhotoPreview(result.data.profile_photo);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [user, authLoading]);
+
+  // Mostrar loading mientras se carga la autenticación o los datos
+  if (authLoading || isLoading || !displayName || !photoPreview) {
+    return (
+      <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
+        <div className="relative">
+          <div className="h-[250px] w-full relative overflow-hidden rounded-t-lg">
+            <div className="w-full h-full bg-gray-200 animate-pulse"></div>
+          </div>
+          <div className="absolute bottom-4 left-6 flex flex-col md:flex-row md:items-center gap-2 bg-background-1/50 backdrop-blur-sm p-2 pr-2 rounded-full">
+            <div className="w-16 h-16 bg-gray-300 rounded-full animate-pulse"></div>
+            <div className="flex flex-col">
+              <div className="w-32 h-6 bg-gray-300 rounded animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+        <div className="pr-6 py-4 flex gap-2 flex-wrap">
+          <div className="w-24 h-10 bg-gray-300 rounded animate-pulse"></div>
+          <div className="w-32 h-10 bg-gray-300 rounded animate-pulse"></div>
+          <div className="w-36 h-10 bg-gray-300 rounded animate-pulse"></div>
+        </div>
+      </Card>
+    );
+  }
 
   return (
     <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
@@ -80,13 +116,13 @@ export default function UserCard({ authorName, imageUrl }: UserCardProps) {
               isBordered
               radius="full"
               size="lg"
-              src={imageUrl}
+              src={photoPreview}
               className="border-white cursor-pointer hover:scale-105 transition-transform"
               onClick={() => setIsEditProfileOpen(true)}
             />
             <div className="flex flex-col">
               <span className="text-white font-semibold text-lg">
-                {authorName}
+                {displayName}
               </span>
             </div>
           </div>

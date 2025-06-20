@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import { changeEmail } from "@/app/services/auth/change-email";
 
 interface Props {
   isOpen: boolean;
@@ -47,28 +48,27 @@ export default function EditEmailModal({ isOpen, onClose, onSaved }: Props) {
 
     setIsSubmitting(true);
     try {
-      // Aquí iría la lógica para cambiar el email
-      // const result = await changeEmail(newEmail);
+      const result = await changeEmail({ newEmail });
 
-      // Simulación de respuesta exitosa
-      setSuccess(true);
-      setError(false);
-      setResponseMessage("Correo electrónico actualizado exitosamente");
-
-      setTimeout(() => {
-        onClose();
-        setIsVisible(false);
-        onSaved?.();
-      }, 1500);
+      if (result.success) {
+        setSuccess(true);
+        setError(false);
+        setResponseMessage("Correo electrónico actualizado exitosamente");
+        setTimeout(() => {
+          onClose();
+          setIsVisible(false);
+          onSaved?.();
+        }, 1500);
+      } else {
+        setError(true);
+        setSuccess(false);
+        setResponseMessage(result.error);
+      }
     } catch (error: unknown) {
       setError(true);
-      setSuccess(false);
-      if (error instanceof Error) {
-        setResponseMessage(`Error inesperado: ${error.message}`);
-      } else {
-        setResponseMessage("Ocurrió un error desconocido");
-      }
+      setResponseMessage("Ocurrió un error desconocido");
       setIsVisible(true);
+      setIsSubmitting(false);
     } finally {
       setIsSubmitting(false);
     }

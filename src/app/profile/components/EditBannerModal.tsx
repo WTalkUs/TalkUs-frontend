@@ -56,8 +56,10 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
     setIsSubmitting(true);
     try {
       // Aquí iría la lógica para actualizar el banner
+      // Por ahora simulamos la respuesta exitosa
       // const result = await editBanner({
-      //   bannerURL: bannerFile ? await uploadBanner(bannerFile) : user.bannerURL,
+      //   banner: bannerFile || undefined,
+      //   bannerURL: bannerFile ? undefined : (user?.bannerURL || undefined),
       // });
 
       // Simulación de respuesta exitosa
@@ -142,7 +144,7 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
                     label="Banner del Perfil"
                     type="file"
                     accept="image/*"
-                    description="Sube una imagen para el banner de tu perfil (JPG, PNG, GIF). Recomendado: 1200x400px"
+                    description="Sube una imagen para el banner de tu perfil (JPG, PNG, GIF)."
                     className="!w-full"
                     onChange={handleBannerFileChange}
                   />

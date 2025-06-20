@@ -2,12 +2,8 @@
 import styles from "../page.module.css";
 import PostsList from "../common/components/PostList";
 import UserCard from "./components/UserCard";
-import { useAuth } from "@/app/contexts/AuthProvider";
 import { Tab, Tabs } from "@heroui/react";
-
 export default function Profile() {
-  const { user } = useAuth();
-
   let tabs = [
     {
       id: "posts",
@@ -27,10 +23,7 @@ export default function Profile() {
     <div className={styles.page}>
       <main className={styles.main}>
         <div className="flex flex-col items-start justify-center">
-          <UserCard
-            authorName={user?.displayName || ""}
-            imageUrl={user?.photoURL || ""}
-          />
+          <UserCard />
           <Tabs
             variant="underlined"
             size="lg"
