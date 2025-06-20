@@ -8,6 +8,7 @@ export interface User {
   id: string;
   username: string;
   profile_photo: string;
+  banner_image: string;
   created_at: string;
   updated_at: string;
 }

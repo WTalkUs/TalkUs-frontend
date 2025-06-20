@@ -34,7 +34,7 @@ import { getUserById } from "@/app/services/auth/getById";
 export default function NavbarComponent() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [displayName, setDisplayName] = useState<string>("");
-  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoProfile, setPhotoProfile] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
   const getItemColor = (item: string) => {
@@ -61,7 +61,7 @@ export default function NavbarComponent() {
         const result = await getUserById();
         if (result.success && result.data) {
           setDisplayName(result.data.username);
-          setPhotoPreview(result.data.profile_photo);
+          setPhotoProfile(result.data.profile_photo);
         }
         setIsLoading(false);
       }
@@ -163,7 +163,7 @@ export default function NavbarComponent() {
                   color="secondary"
                   name={displayName}
                   size="sm"
-                  src={photoPreview}
+                  src={photoProfile}
                 />
                 <p className="font-bold text-inherit text-lg pl-2 hidden sm:flex">
                   {displayName}

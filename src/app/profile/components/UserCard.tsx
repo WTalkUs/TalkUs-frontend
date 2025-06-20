@@ -19,7 +19,8 @@ export default function UserCard() {
   const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
 
   const [displayName, setDisplayName] = useState<string>("");
-  const [photoPreview, setPhotoPreview] = useState<string>("");
+  const [photoProfile, setPhotoProfile] = useState<string>("");
+  const [banner, setBanner] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
 
   const { user, loading: authLoading } = useAuth();
@@ -32,7 +33,8 @@ export default function UserCard() {
         const result = await getUserById();
         if (result.success && result.data) {
           setDisplayName(result.data.username);
-          setPhotoPreview(result.data.profile_photo);
+          setPhotoProfile(result.data.profile_photo);
+          setBanner(result.data.banner_image);
         }
         setIsLoading(false);
       }
@@ -42,7 +44,7 @@ export default function UserCard() {
   }, [user, authLoading]);
 
   // Mostrar loading mientras se carga la autenticación o los datos
-  if (authLoading || isLoading || !displayName || !photoPreview) {
+  if (authLoading || isLoading || !displayName || !photoProfile || !banner) {
     return (
       <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
         <div className="relative">
@@ -70,7 +72,7 @@ export default function UserCard() {
       <div className="relative">
         <div className="h-[250px] w-full relative overflow-hidden rounded-t-lg">
           <Image
-            src="https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378143/samples/man-portrait.jpg"
+            src={banner}
             fill
             alt="banner"
             className="object-cover"
@@ -116,7 +118,7 @@ export default function UserCard() {
               isBordered
               radius="full"
               size="lg"
-              src={photoPreview}
+              src={photoProfile}
               className="border-white cursor-pointer hover:scale-105 transition-transform"
               onClick={() => setIsEditProfileOpen(true)}
             />

@@ -8,8 +8,10 @@ import {
   Form,
   Input,
 } from "@heroui/react";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import { editProfile } from "@/app/services/auth/edit";
+import { getUserById } from "@/app/services/auth/getById";
 
 interface Props {
   isOpen: boolean;
@@ -18,30 +20,34 @@ interface Props {
 }
 
 export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [bannerFile, setBannerFile] = useState<File | null>(null);
   const [bannerPreview, setBannerPreview] = useState<string>(
     "https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378143/samples/man-portrait.jpg"
   );
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   // Estados para el manejo de errores y mensajes
   const [isVisible, setIsVisible] = useState<boolean>(true);
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
 
-  const handleBannerFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setBannerFile(file);
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setBannerPreview(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  useEffect(() => {
+    const fetchUser = async () => {
+      // Solo intentar cargar datos si el usuario está autenticado y no estamos cargando
+      if (user && !authLoading) {
+        setIsLoading(true);
+        const result = await getUserById();
+        if (result.success && result.data) {
+          setBannerPreview(result.data.banner_image);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [user, authLoading]);
 
   const handleEditBanner = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -53,25 +59,36 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
       return;
     }
 
+    if (!bannerFile) {
+      setError(true);
+      setResponseMessage("No se ha seleccionado ninguna imagen");
+      setIsVisible(true);
+      return;
+    }
+
     setIsSubmitting(true);
+
     try {
-      // Aquí iría la lógica para actualizar el banner
-      // Por ahora simulamos la respuesta exitosa
-      // const result = await editBanner({
-      //   banner: bannerFile || undefined,
-      //   bannerURL: bannerFile ? undefined : (user?.bannerURL || undefined),
-      // });
+      const result = await editProfile({
+        displayName: user.displayName || "",
+        banner: bannerFile,
+      });
 
-      // Simulación de respuesta exitosa
-      setSuccess(true);
-      setError(false);
-      setResponseMessage("Banner actualizado exitosamente");
+      if (result.success) {
+        setSuccess(true);
+        setError(false);
+        setResponseMessage(result.message);
 
-      setTimeout(() => {
-        onClose();
-        setIsVisible(false);
-        onSaved?.();
-      }, 1500);
+        setTimeout(() => {
+          onClose();
+          setIsVisible(false);
+        }, 1500);
+      } else {
+        setError(true);
+        setSuccess(false);
+        setResponseMessage(`Error: ${result.error}`);
+        setIsVisible(true);
+      }
     } catch (error: unknown) {
       setError(true);
       setSuccess(false);
@@ -122,37 +139,37 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
           <Form onSubmit={handleEditBanner} className="space-y-6">
             {/* Banner del perfil */}
             <div className="space-y-3">
-              <h3 className="text-lg font-medium">Banner del Perfil</h3>
+              <h3 className="text-lg font-medium">Banner Profile</h3>
               <div className="relative">
                 <div className="h-[150px] w-full relative overflow-hidden rounded-lg border-2 border-dashed border-gray-300">
                   <img
                     src={bannerPreview}
                     alt="Banner preview"
-                    className="w-full h-full object-cover"
+                    className="w-full h-[150px] object-cover"
                   />
                   <div className="absolute inset-0 bg-black/20 flex items-center justify-center">
                     <div className="text-center">
-                      <p className="text-white text-sm mb-2">
-                        Vista previa del banner
-                      </p>
+                      <p className="text-white text-sm mb-2">Banner Preview</p>
                     </div>
                   </div>
                 </div>
                 <div className="mt-3">
                   <Input
-                    name="bannerURL"
-                    label="Banner del Perfil"
+                    name="banner"
+                    label="Banner Profile"
                     type="file"
-                    accept="image/*"
-                    description="Sube una imagen para el banner de tu perfil (JPG, PNG, GIF)."
+                    description="Upload an image for your profile banner (JPG, PNG, GIF)."
                     className="!w-full"
-                    onChange={handleBannerFileChange}
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] ?? null;
+                      setBannerFile(file);
+                    }}
                   />
                 </div>
               </div>
             </div>
 
-            <div className="flex gap-3 pt-4 items-center">
+            <div className="flex gap-3 pt-4 items-center justify-center w-full">
               <Button
                 type="button"
                 variant="bordered"
@@ -160,15 +177,15 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
                 onPress={handleClose}
                 disabled={isSubmitting}
               >
-                Cancelar
+                Cancel
               </Button>
               <Button
                 type="submit"
                 color="secondary"
-                className="flex-1"
+                className="flex-1 "
                 disabled={isSubmitting}
               >
-                {isSubmitting ? "Actualizando..." : "Actualizar Banner"}
+                {isSubmitting ? "Updating..." : "Update"}
               </Button>
             </div>
           </Form>

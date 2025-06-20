@@ -6,6 +6,7 @@ import { getAuth } from "firebase/auth";
 interface EditProfileData {
   displayName: string;
   photo?: File;
+  banner?: File;
 }
 
 interface EditProfileSuccessResponse {
@@ -36,8 +37,11 @@ export const editProfile = async (
     if (data.photo) {
       formData.append("profile_photo", data.photo);
     }
+    if (data.banner) {
+      formData.append("banner_image", data.banner);
+    }
 
-    const response = await api.put("/api/profile-photo", formData, {
+    const response = await api.put("/api/edit-profile", formData, {
       params: { id: user?.uid },
       headers: {
         Authorization: `Bearer ${token}`,
