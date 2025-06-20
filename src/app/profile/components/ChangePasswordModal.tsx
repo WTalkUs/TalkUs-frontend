@@ -10,6 +10,7 @@ import {
 } from "@heroui/react";
 import { FormEvent, useState } from "react";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import { changePassword } from "@/app/services/auth/change-password";
 
 interface Props {
   isOpen: boolean;
@@ -76,28 +77,32 @@ export default function ChangePasswordModal({
 
     setIsSubmitting(true);
     try {
-      // Aquí iría la lógica para cambiar la contraseña
-      // const result = await changePassword(currentPassword, newPassword);
+      const result = await changePassword({
+        currentPassword,
+        newPassword,
+      });
 
-      // Simulación de respuesta exitosa
-      setSuccess(true);
-      setError(false);
-      setResponseMessage("Contraseña actualizada exitosamente");
+      if (result.success) {
+        setSuccess(true);
+        setError(false);
+        setResponseMessage("Contraseña actualizada exitosamente");
 
-      setTimeout(() => {
-        onClose();
-        setIsVisible(false);
-        onSaved?.();
-      }, 1500);
+        setTimeout(() => {
+          onClose();
+          setIsVisible(false);
+          onSaved?.();
+        }, 1500);
+      } else {
+        setError(true);
+        setSuccess(false);
+        setResponseMessage(result.error);
+      }
     } catch (error: unknown) {
       setError(true);
       setSuccess(false);
-      if (error instanceof Error) {
-        setResponseMessage(`Error inesperado: ${error.message}`);
-      } else {
-        setResponseMessage("Ocurrió un error desconocido");
-      }
+      setResponseMessage("Ocurrió un error desconocido");
       setIsVisible(true);
+      setIsSubmitting(false);
     } finally {
       setIsSubmitting(false);
     }
