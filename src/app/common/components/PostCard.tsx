@@ -23,7 +23,7 @@ import EditPostModal from "./EditPostModal";
 
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
-import {reactToPost} from "@/app/services/posts/react";
+import { reactToPost } from "@/app/services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
 import type { ReactPostData } from "@/app/services/posts/react";
 
@@ -41,6 +41,7 @@ type PostCardProps = {
   content: string;
   imageUrl: string;
   authorId: string;
+  authorImage: string;
   tags: string[];
   createdAt: string;
   likes: number;
@@ -57,6 +58,7 @@ export default function PostCard({
   authorId,
   tags,
   imageUrl,
+  authorImage,
   createdAt,
   likes,
   dislikes,
@@ -72,23 +74,21 @@ export default function PostCard({
   const [reaction, setReaction] = useState<Reaction>("none");
   const [counts, setCounts] = useState({ likes, dislikes });
 
-   useEffect(() => {
-  if (!user) return; 
-  const fetchVote = async () => {
-    const resp = await getUserVote(id);
-    if (resp.success) {
-      setReaction(resp.data.type);      
-    } else if (resp.error === "not_found") {
-      setReaction("none");               
-    } else {
-      console.error("Error fetching vote:", resp.error);
-      setReaction("none");
-    }
-  };
-  fetchVote();
-}, [id, user]);
-
-
+  useEffect(() => {
+    if (!user) return;
+    const fetchVote = async () => {
+      const resp = await getUserVote(id);
+      if (resp.success) {
+        setReaction(resp.data.type);
+      } else if (resp.error === "not_found") {
+        setReaction("none");
+      } else {
+        console.error("Error fetching vote:", resp.error);
+        setReaction("none");
+      }
+    };
+    fetchVote();
+  }, [id, user]);
 
   const handleDelete = async () => {
     if (user) {
@@ -105,45 +105,46 @@ export default function PostCard({
   };
 
   const handleReactPost = async (action: "like" | "dislike") => {
-  if (!user) {
-    console.error("User not authenticated");
-    return;
-  }
-  const isToggleOff = reaction === action;
-
-  setCounts(({ likes: L, dislikes: D }) => {
-    let likes = L, dislikes = D;
-
-    if (reaction === "like") likes--;
-    if (reaction === "dislike") dislikes--;
-
-    // si no es toggle-off, suma la nueva
-    if (!isToggleOff) {
-      if (action === "like") likes++;
-      else dislikes++;
+    if (!user) {
+      console.error("User not authenticated");
+      return;
     }
+    const isToggleOff = reaction === action;
 
-    return { likes, dislikes };
-  });
+    setCounts(({ likes: L, dislikes: D }) => {
+      let likes = L,
+        dislikes = D;
 
-  // Ajusta el estado de reacción local
-  setReaction(isToggleOff ? "none" : action);
+      if (reaction === "like") likes--;
+      if (reaction === "dislike") dislikes--;
 
-  const payload : ReactPostData ={
-    postId: id,
-    type: isToggleOff ? "none" : action,
-    userId: user.uid,
+      // si no es toggle-off, suma la nueva
+      if (!isToggleOff) {
+        if (action === "like") likes++;
+        else dislikes++;
+      }
+
+      return { likes, dislikes };
+    });
+
+    // Ajusta el estado de reacción local
+    setReaction(isToggleOff ? "none" : action);
+
+    const payload: ReactPostData = {
+      postId: id,
+      type: isToggleOff ? "none" : action,
+      userId: user.uid,
+    };
+
+    try {
+      const result = await reactToPost(payload);
+      if (!result.success) {
+        console.error(`Error ${action}ing post:`, result.error);
+      }
+    } catch (error) {
+      console.error("Error reacting to post:", error);
+    }
   };
-
-  try {
-    const result = await reactToPost(payload);
-    if (!result.success) {
-      console.error(`Error ${action}ing post:`, result.error);
-    }
-  } catch (error) {
-    console.error("Error reacting to post:", error);
-  }
-};
 
   return (
     <Card className="w-full bg-background-1 shadow-md rounded-lg border border-default-200">
@@ -157,14 +158,14 @@ export default function PostCard({
         />
         <div className="col-span-4 flex flex-col justify-between ">
           <div className="grid grid-cols-[4fr_1fr]">
-            <Link href={`/post-details/${id}`}> 
-            <div className="">
-              <h2 className="text-2xl font-semibold text-default-900 mb-2">
-                {title.length > 44 ? `${title.substring(0, 44)}...` : title}
-              </h2>
-              <Tags tags={tags} />
-            </div>
-            </Link> 
+            <Link href={`/post-details/${id}`}>
+              <div className="">
+                <h2 className="text-2xl font-semibold text-default-900 mb-2">
+                  {title.length > 44 ? `${title.substring(0, 44)}...` : title}
+                </h2>
+                <Tags tags={tags} />
+              </div>
+            </Link>
             <div className="my-0 items-end max-h-[32px] text-right">
               {user ? (
                 <IconButton
@@ -217,7 +218,8 @@ export default function PostCard({
                 isBordered
                 radius="full"
                 size="md"
-                src="https://heroui.com/avatars/avatar-1.png"
+                src={authorImage}
+                className="w-10 h-10"
               />
               <div className="flex flex-col">
                 <span className="text-default-900 font-semibold">
@@ -239,20 +241,28 @@ export default function PostCard({
             </div>
             {user ? (
               <div className="flex justify-end mt-4">
-              <Button
-                size="sm"
-                onClick={() => handleReactPost("like")}
-                className="bg-transparent border-none cursor-pointer"
-              >
-                <ThumbUpIcon fontSize="small" color={reaction === "like" ? "secondary" : "inherit"}/> {counts.likes}
-              </Button>
-              <Button
-                size="sm"
-                onClick={() => handleReactPost("dislike")}
-                className="bg-transparent border-none cursor-pointer"
-              >
-                <ThumbDownIcon fontSize="small" color={reaction === "dislike" ? "secondary" : "inherit"}/> {counts.dislikes}
-              </Button>
+                <Button
+                  size="sm"
+                  onClick={() => handleReactPost("like")}
+                  className="bg-transparent border-none cursor-pointer"
+                >
+                  <ThumbUpIcon
+                    fontSize="small"
+                    color={reaction === "like" ? "secondary" : "inherit"}
+                  />{" "}
+                  {counts.likes}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={() => handleReactPost("dislike")}
+                  className="bg-transparent border-none cursor-pointer"
+                >
+                  <ThumbDownIcon
+                    fontSize="small"
+                    color={reaction === "dislike" ? "secondary" : "inherit"}
+                  />{" "}
+                  {counts.dislikes}
+                </Button>
               </div>
             ) : null}
           </div>
