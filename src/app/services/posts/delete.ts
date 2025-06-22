@@ -1,6 +1,6 @@
 "use client";
 import axios, { AxiosError } from "axios";
-import api from "../../lib/axios";
+import api from "@lib/axios";
 import { getAuth } from "firebase/auth";
 
 interface DeletePostSuccessResponse {

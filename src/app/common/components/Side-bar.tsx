@@ -19,7 +19,6 @@ export default function SideBar() {
               className="w-full bg-secondary text-white py-2 rounded mb-2"
               onClick={() => {
                 setModalOpen(true)
-                console.log("Create Group button clicked", modalOpen);
               }}
             >
               Create New Group
