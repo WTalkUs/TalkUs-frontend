@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-import { getAllPosts } from "../../services/posts/getAll";
+import { getAllPosts } from "@/app/services/posts/getAll";
+import { getPostsByAuthorID } from "@/app/services/posts/getByAuthorID";
 import PostSkeletonLoading from "./PostSkeletonLoading";
+import { getPostsByILiked } from "@/app/services/posts/getByILiked";
 
 type PostUser = {
   uid: string;
   email: string;
-  password: string;
   username: string;
   profile_photo: string;
 };
@@ -29,7 +30,12 @@ type Post = {
   dislikes: number;
 };
 
-export default function PostsList() {
+interface PostListProps {
+  type?: "all" | "user-posts" | "saved-posts" | "liked-posts";
+  userId?: string;
+}
+
+export default function PostsList({ type = "all", userId }: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -37,11 +43,35 @@ export default function PostsList() {
   useEffect(() => {
     const fetchPosts = async () => {
       setLoading(true);
-      const result = await getAllPosts();
+      let result;
+
+      switch (type) {
+        case "user-posts":
+          if (userId) {
+            result = await getPostsByAuthorID(userId);
+          } else {
+            result = { success: false, error: "ID de autor requerido" };
+          }
+          break;
+        case "saved-posts":
+          // TODO: Implementar servicio para posts guardados
+          result = { success: true, data: [] };
+          break;
+        case "liked-posts":
+          if (userId) {
+            result = await getPostsByILiked(userId);
+          } else {
+            result = { success: false, error: "ID de usuario requerido" };
+          }
+          break;
+        default:
+          result = await getAllPosts();
+          break;
+      }
 
       if (result.success) {
         setPosts(
-          result.data.map((post: any) => ({
+          (result.data || []).map((post: any) => ({
             ...post,
             author: post.author ?? {
               uid: "",
@@ -54,16 +84,26 @@ export default function PostsList() {
         );
         setError(null);
       } else {
-        setError(result.error);
+        setError(result.error || "Error desconocido");
       }
       setLoading(false);
     };
 
     fetchPosts();
-  }, []);
+  }, [type, userId]);
+
   if (loading) return <PostSkeletonLoading />;
   if (error) return <p style={{ color: "red" }}>Error: {error}</p>;
-  if (posts.length === 0) return <p>No hay publicaciones</p>;
+  if (posts.length === 0) {
+    const messages = {
+      all: "No hay publicaciones",
+      "user-posts": "No has publicado nada aún",
+      "saved-posts": "No tienes publicaciones guardadas",
+      "liked-posts": "No has dado like a ninguna publicación",
+    };
+    return <p>{messages[type]}</p>;
+  }
+
   return (
     <div className="flex flex-col gap-4">
       {posts.map((post) => (
