@@ -1,29 +1,15 @@
 import axios, { AxiosError } from "axios";
 import api from "@lib/axios";
-import { getAuth } from "firebase/auth";
 
 export const getAllGroups = async (): Promise<any> => {
-  const auth = getAuth();
-  console.log("Authentication object:", auth);
-  const user = auth.currentUser;
-  console.log("Fetching all groups for user:", user);
-  const token = user ? await user.getIdToken() : null;
-  console.log("User token:", token);
   try {
-    const response = await api.get("/public/subforos", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    });
-    console.log("Response from API:", response.data);
+    const response = await api.get("/public/subforos");
     return {
       success: true,
       data: response.data,
       message: "Groups fetched successfully",
     };
-  }
-  catch (error) {
+  } catch (error) {
     if (axios.isAxiosError(error)) {
       const axiosError = error as AxiosError;
       console.error("Axios error while fetching groups:", axiosError);
