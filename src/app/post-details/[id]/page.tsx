@@ -36,7 +36,6 @@ export default function PostDetails(props: {
     getPostById(id)
       .then((resp) => {
         if (resp.success) {
-          console.log("Post fetched:", resp.data);
           setPost(resp.data);
           setError(null);
         } else {
@@ -143,7 +142,7 @@ export default function PostDetails(props: {
               isBordered
               radius="full"
               size="md"
-              src="https://heroui.com/avatars/avatar-1.png"
+              src={post.author.profile_photo}
             />
             <div className="flex flex-col">
               <span className="text-default-900 font-semibold">

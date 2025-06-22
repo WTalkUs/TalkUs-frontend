@@ -6,9 +6,9 @@ import api from "../../lib/axios";
 export interface Post {
   author: {
     email: string;
-    password: string;
     uid: string;
     username: string;
+    profile_photo: string;
   };
   post: {
     id: string;

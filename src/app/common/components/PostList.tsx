@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import PostCard from "./PostCard";
-import { Card, Skeleton } from "@heroui/react";
 import { getAllPosts } from "../../services/posts/getAll";
 import PostSkeletonLoading from "./PostSkeletonLoading";
 
@@ -11,6 +10,7 @@ type PostUser = {
   email: string;
   password: string;
   username: string;
+  profile_photo: string;
 };
 
 type Post = {
@@ -48,6 +48,7 @@ export default function PostsList() {
               email: "",
               password: "",
               username: "",
+              profile_photo: "",
             },
           }))
         );
@@ -70,6 +71,7 @@ export default function PostsList() {
           key={post.id}
           id={post.id}
           authorName={post.author.username}
+          authorImage={post.author.profile_photo}
           title={post.title}
           content={post.content}
           tags={post.tags}
