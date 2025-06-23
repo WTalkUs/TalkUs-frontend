@@ -3,31 +3,12 @@ import styles from "../page.module.css";
 import PostsList from "../common/components/PostList";
 import UserCard from "./components/UserCard";
 import { Tab, Tabs } from "@heroui/react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useAuth } from "../contexts/AuthProvider";
-import { getSavedPosts, Post } from "../services/posts/getPostsSaved";
 
 export default function Profile() {
   const [selectedTab, setSelectedTab] = useState("posts");
   const { user } = useAuth();
-  
-    const [savedPosts, setSavedPosts] = useState<Post[]>([]);
-  
-    useEffect(() => {
-      if (!user) return;
-  
-      (async () => {
-        const resp = await getSavedPosts(user.uid);
-        if (resp.success) {
-          setSavedPosts(resp.posts);
-        } else {
-          console.error("Error fetching saved posts:", resp.error);
-          setSavedPosts([]);
-        }
-      })();
-    }, [user]);
-  
-    console.log("Saved posts:", savedPosts);
 
   let tabs = [
     {
