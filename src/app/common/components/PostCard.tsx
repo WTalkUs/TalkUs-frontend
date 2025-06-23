@@ -20,11 +20,14 @@ import Tags from "./Tags";
 import Image from "next/image";
 import Link from "next/link";
 import EditPostModal from "./EditPostModal";
-
+import { savePost } from "@/app/services/posts/savePost"
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
 import { reactToPost } from "@/app/services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
+import {getSavedStatus} from "@/app/services/posts/getPostSaved";
+import { getSavedPosts, Post } from "@/app/services/posts/getPostsSaved";
+import { unSavePost } from "@/app/services/posts/unSavePost";
 import type { ReactPostData } from "@/app/services/posts/react";
 
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
@@ -72,7 +75,28 @@ export default function PostCard({
   } = useDisclosure();
 
   const [reaction, setReaction] = useState<Reaction>("none");
+  const [saved, setSaved] = useState(false);
   const [counts, setCounts] = useState({ likes, dislikes });
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const resp = await getSavedStatus({ postId: id, userId: user.uid });
+      if (resp.success) setSaved(resp.saved);
+    })();
+  }, [id, user]);
+
+  const handleToggleSave = async () => {
+    if (!user) return console.error("No auth");
+    setSaved(s => !s);
+
+    const fn = saved ? unSavePost : savePost;
+    const result = await fn({ postId: id });
+    if (!result.success) {
+      console.error("Error toggling save:", result.error);
+      setSaved(s => !s);
+    }
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -171,8 +195,9 @@ export default function PostCard({
                 <IconButton
                   className="cursor-pointer h-32px !pt-0"
                   color="inherit"
+                  onClick={() => handleToggleSave()}
                 >
-                  <FavoriteIcon fontSize="medium" />
+                  <FavoriteIcon fontSize="medium" color={saved ? "secondary" : "inherit"}/>
                 </IconButton>
               ) : null}
               {user?.uid === authorId ? (
