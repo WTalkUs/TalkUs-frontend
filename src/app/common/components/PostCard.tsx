@@ -20,12 +20,12 @@ import Tags from "./Tags";
 import Image from "next/image";
 import Link from "next/link";
 import EditPostModal from "./EditPostModal";
-import { savePost } from "@/app/services/posts/savePost"
+import { savePost } from "@/app/services/posts/savePost";
 import { useAuth } from "@/app/contexts/AuthProvider";
 import { deletePost } from "@/app/services/posts/delete";
 import { reactToPost } from "@/app/services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
-import {getSavedStatus} from "@/app/services/posts/getPostSaved";
+import { getSavedStatus } from "@/app/services/posts/getPostSaved";
 import { getSavedPosts, Post } from "@/app/services/posts/getPostsSaved";
 import { unSavePost } from "@/app/services/posts/unSavePost";
 import type { ReactPostData } from "@/app/services/posts/react";
@@ -88,13 +88,13 @@ export default function PostCard({
 
   const handleToggleSave = async () => {
     if (!user) return console.error("No auth");
-    setSaved(s => !s);
+    setSaved((s) => !s);
 
     const fn = saved ? unSavePost : savePost;
     const result = await fn({ postId: id });
     if (!result.success) {
       console.error("Error toggling save:", result.error);
-      setSaved(s => !s);
+      setSaved((s) => !s);
     }
   };
 
@@ -172,7 +172,7 @@ export default function PostCard({
 
   return (
     <Card className="w-full bg-background-1 shadow-md rounded-lg border border-default-200">
-      <div className="grid md:grid-cols-5 gap-4 p-6">
+      <div className="grid md:grid-cols-5 gap-4 p-6 w-full">
         <Image
           src={imageUrl}
           width={156}
@@ -180,7 +180,7 @@ export default function PostCard({
           alt="post image"
           className="rounded-2xl object-cover size-full col-span-1 hidden md:block w-[156px] h-[156px]"
         />
-        <div className="col-span-4 flex flex-col justify-between ">
+        <div className="col-span-4 flex flex-col justify-between w-full">
           <div className="grid grid-cols-[4fr_1fr]">
             <Link href={`/post-details/${id}`}>
               <div className="">
@@ -197,7 +197,10 @@ export default function PostCard({
                   color="inherit"
                   onClick={() => handleToggleSave()}
                 >
-                  <FavoriteIcon fontSize="medium" color={saved ? "secondary" : "inherit"}/>
+                  <FavoriteIcon
+                    fontSize="medium"
+                    color={saved ? "secondary" : "inherit"}
+                  />
                 </IconButton>
               ) : null}
               {user?.uid === authorId ? (

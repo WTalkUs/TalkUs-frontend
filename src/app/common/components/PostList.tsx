@@ -57,7 +57,6 @@ export default function PostsList({ type = "all", userId }: PostListProps) {
         case "saved-posts":
           if (userId) {
             result = await getSavedPosts(userId);
-            console.log(result);
           } else {
             result = { success: false, error: "ID de usuario requerido" };
           }
