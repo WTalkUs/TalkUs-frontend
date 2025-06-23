@@ -1,5 +1,5 @@
 import axios, { AxiosError } from 'axios';
-import api from '../../lib/axios';
+import api from '@lib/axios';
 
 
 interface CreatePostData {

@@ -1,4 +1,4 @@
-import api from '../../lib/axios';
+import api from '@lib/axios';
 import axios from 'axios';
 import type { AxiosError } from 'axios';
 
