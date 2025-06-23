@@ -60,26 +60,30 @@ export default function Profile() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div className="flex flex-col items-start justify-center">
+        <div className="flex flex-col items-start justify-center w-full">
           <UserCard />
-          <Tabs
-            variant="underlined"
-            size="lg"
-            aria-label="Dynamic tabs"
-            items={tabs}
-            className="mt-2 ml-4"
-            selectedKey={selectedTab}
-            onSelectionChange={(key) => setSelectedTab(key as string)}
-          >
-            {(item) => (
-              <Tab key={item.id} title={item.label}>
-                <PostsList
-                  type={getPostListType(item.id) as any}
-                  userId={user?.uid}
-                />
-              </Tab>
-            )}
-          </Tabs>
+          <div className="w-full mt-4">
+            <Tabs
+              variant="underlined"
+              size="lg"
+              aria-label="Dynamic tabs"
+              items={tabs}
+              className="ml-4"
+              selectedKey={selectedTab}
+              onSelectionChange={(key) => setSelectedTab(key as string)}
+            >
+              {(item) => (
+                <Tab key={item.id} title={item.label}>
+                  <div className="pt-4 min-w-[898px]">
+                    <PostsList
+                      type={getPostListType(item.id) as any}
+                      userId={user?.uid}
+                    />
+                  </div>
+                </Tab>
+              )}
+            </Tabs>
+          </div>
         </div>
       </main>
     </div>
