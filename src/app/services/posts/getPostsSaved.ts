@@ -19,7 +19,7 @@ export interface Post {
 
 interface GetSavedPostsSuccess {
   success: true;
-  posts: Post[];
+  data: Post[];
 }
 
 interface GetSavedPostsError {
@@ -45,7 +45,7 @@ export const getSavedPosts = async (
     });
     return {
       success: true,
-      posts: response.data,
+      data: response.data,
     };
   } catch (error) {
     if (axios.isAxiosError(error)) {

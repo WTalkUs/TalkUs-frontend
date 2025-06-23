@@ -31,7 +31,6 @@ export default function GroupsPage() {
       }
     };
     fetchGroups();
-    console.log("Groups fetched:", groups);
   }, []);
 
   return (

@@ -6,6 +6,7 @@ import { getAllPosts } from "@/app/services/posts/getAll";
 import { getPostsByAuthorID } from "@/app/services/posts/getByAuthorID";
 import PostSkeletonLoading from "./PostSkeletonLoading";
 import { getPostsByILiked } from "@/app/services/posts/getByILiked";
+import { getSavedPosts } from "@/app/services/posts/getPostsSaved";
 
 type PostUser = {
   uid: string;
@@ -54,8 +55,12 @@ export default function PostsList({ type = "all", userId }: PostListProps) {
           }
           break;
         case "saved-posts":
-          // TODO: Implementar servicio para posts guardados
-          result = { success: true, data: [] };
+          if (userId) {
+            result = await getSavedPosts(userId);
+            console.log(result);
+          } else {
+            result = { success: false, error: "ID de usuario requerido" };
+          }
           break;
         case "liked-posts":
           if (userId) {

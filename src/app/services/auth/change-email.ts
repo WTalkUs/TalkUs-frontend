@@ -53,8 +53,6 @@ export const changeEmail = async (
       }
     );
 
-    console.log("Respuesta del servidor:", response.data);
-
     return {
       success: true,
       data: response.data,
