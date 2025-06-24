@@ -8,6 +8,7 @@ import PostSkeletonLoading from "./PostSkeletonLoading";
 import { getPostsByILiked } from "@/app/services/posts/getByILiked";
 import { getSavedPosts } from "@/app/services/posts/getPostsSaved";
 import getForumPost from "@services/posts/getForumPost";
+import { getForumPostByVerdict } from "@/app/services/posts/getForumPostByVerdict";
 
 type PostUser = {
   uid: string;
@@ -34,12 +35,23 @@ type Post = {
 };
 
 interface PostListProps {
-  type?: "all" | "user-posts" | "saved-posts" | "liked-posts" | "forum-posts" | "warnings-posts" | "not-related-posts";
+  type?:
+    | "all"
+    | "user-posts"
+    | "saved-posts"
+    | "liked-posts"
+    | "forum-posts"
+    | "warnings-posts"
+    | "not-related-posts";
   userId?: string;
-  forumId?: string; 
+  forumId?: string;
 }
 
-export default function PostsList({ type = "all", userId, forumId }: PostListProps) {
+export default function PostsList({
+  type = "all",
+  userId,
+  forumId,
+}: PostListProps) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -78,22 +90,26 @@ export default function PostsList({ type = "all", userId, forumId }: PostListPro
             result = { success: false, error: "ID de foro requerido" };
           }
           break;
-        // case "warnings-posts":
-        //   if (forumId) {
-        //     const warnings = await getForumPost(forumId);
-        //     result = warnings.data?.filter((post) => post.verdict === "The post is not related to the group");
-        //   } else {
-        //     result = { success: false, error: "ID de foro requerido" };
-        //   }
-        //   break;
-        // case "not-related-posts":
-        //   if (forumId) {
-        //     const response = await getForumPost(forumId);
-        //     result = response.data?.filter((post) => post.verdict === "The post is not related to the group");
-        //   } else {
-        //     result = { success: false, error: "ID de foro requerido" };
-        //   }
-        //   break;
+        case "warnings-posts":
+          if (forumId) {
+            result = await getForumPostByVerdict(
+              forumId,
+              "Could be related, requires review"
+            );
+          } else {
+            result = { success: false, error: "ID de foro requerido" };
+          }
+          break;
+        case "not-related-posts":
+          if (forumId) {
+            result = await getForumPostByVerdict(
+              forumId,
+              "The post is not related to the group"
+            );
+          } else {
+            result = { success: false, error: "ID de foro requerido" };
+          }
+          break;
         default:
           result = await getAllPosts();
           break;
@@ -114,7 +130,7 @@ export default function PostsList({ type = "all", userId, forumId }: PostListPro
         );
         setError(null);
       } else {
-        setError(result.error as string || "Error desconocido");
+        setError((result.error as string) || "Error desconocido");
       }
       setLoading(false);
     };

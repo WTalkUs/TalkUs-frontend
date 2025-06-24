@@ -36,7 +36,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
       const result = await getGroupById(forumId);
       setGroup(result.data);
       setBanner(result.data.bannerUrl || "./placeholder-banner.png");
-      setPhotoProfile(result.data.iconUrl || "./placeholder-icon.png");
+      setPhotoProfile(result.data.iconUrl || "");
       setDisplayName(result.data.title || "Grupo sin nombre");
       setIsModerator(result.data.moderators.includes(user?.uid));
       setIsMember(
@@ -113,7 +113,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
   };
 
   // Mostrar loading mientras se carga la autenticación o los datos
-  if (authLoading || isLoading || !displayName || !photoProfile || !banner) {
+  if (authLoading || isLoading || !displayName || !banner) {
     return (
       <Card className="lg:w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
         <div className="relative">
@@ -167,13 +167,23 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
           )}
 
           <div className="absolute w-fit bottom-4 left-6 flex flex-col md:flex-row md:items-center gap-2 bg-background-1/50 backdrop-blur-sm p-2 pr-2 rounded-full">
-            <Avatar
-              isBordered
-              radius="full"
-              size="lg"
-              src={photoProfile}
-              className="border-white cursor-pointer hover:scale-105 transition-transform"
-            />
+            {photoProfile ? (
+              <Avatar
+                size="lg"
+                isBordered
+                src={photoProfile}
+                className="bg-default-100"
+              />
+            ) : (
+              <Avatar
+                className="bg-red-600 text-white font-bold"
+                name={`g/${displayName}`}
+                size="lg"
+                isBordered
+              >
+                {displayName.charAt(0).toUpperCase()}
+              </Avatar>
+            )}
             <div className="flex  flex-col">
               <span className="text-white font-semibold text-lg">
                 {displayName}
@@ -188,7 +198,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
         <div className="p-6 grid grid-cols-3 gap-4">
           <div className="col-span-2">{group?.description}</div>
           <div className=" col-span-1 flex gap-2 flex-wrap justify-end">
-            <PostModal forumId={forumId}/>
+            <PostModal forumId={forumId} />
 
             {/* Botón para cambiar email */}
             <Button

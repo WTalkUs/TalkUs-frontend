@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardBody } from "@heroui/react";
+import { Card, CardHeader, CardBody, Avatar } from "@heroui/react";
 import { useRouter } from "next/navigation";
 
 interface CardItem {
@@ -38,12 +38,22 @@ export default function SideBarCards({
                 router.push(`/groups/${item.id}`);
               }}
             >
-              {item.image && (
-                <img
+              {item.image ? (
+                <Avatar
+                  size="sm"
+                  isBordered
                   src={item.image}
-                  alt={item.title || "Imagen"}
-                  className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+                  className="bg-default-100"
                 />
+              ) : (
+                <Avatar
+                  className="bg-red-600 text-white font-bold"
+                  name={`g/${item.title}`}
+                  size="sm"
+                  isBordered
+                >
+                  {item.title?.charAt(0).toUpperCase()}
+                </Avatar>
               )}
               <div className="flex flex-col">
                 <p className="text-md font-medium overflow-hidden text-ellipsis whitespace-nowrap">
