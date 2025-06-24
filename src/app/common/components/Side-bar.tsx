@@ -16,7 +16,6 @@ export default function SideBar() {
     if (user?.uid) {
       const fetchGroups = async () => {
         const response = await getGroupsByUserId(user.uid);
-        console.log(response);
         setGroups(response.data || []);
       };
       fetchGroups();
