@@ -130,7 +130,7 @@ export default function UserCard() {
           </div>
         </div>
 
-        <div className="pr-6 py-4 flex gap-2 flex-wrap">
+        <div className="px-6 py-4 flex gap-2 flex-wrap">
           <PostModal />
 
           {/* Botón para cambiar email */}
