@@ -14,6 +14,7 @@ import {
 import { FormEvent, useEffect, useState } from "react";
 import { editPost } from "../../services/posts/edit";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import {MarkdownEditor} from "@/app/common/components/MarkdownEditor";
 
 interface Props {
   isOpen: boolean;
@@ -145,15 +146,7 @@ export default function EditPostModal({ isOpen, onClose, post }: Props) {
             />
 
             {/* Content */}
-            <Textarea
-              isRequired
-              name="content"
-              label="Content"
-              placeholder="Enter your content"
-              className="!w-full"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <MarkdownEditor value={content} onChange={setContent} />
 
             <Select
               name="tags"

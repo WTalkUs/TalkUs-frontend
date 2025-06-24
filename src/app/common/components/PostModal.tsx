@@ -15,6 +15,7 @@ import {
 import { FormEvent, useState } from "react";
 import { createPost } from "../../services/posts/create";
 import { useAuth } from "@/app/contexts/AuthProvider";
+import {MarkdownEditor} from "@/app/common/components/MarkdownEditor";
 
 export default function PostModal() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -139,16 +140,7 @@ export default function PostModal() {
               onChange={(e) => setTitle(e.target.value)}
             />
 
-            {/* Content */}
-            <Textarea
-              isRequired
-              name="content"
-              label="Content"
-              placeholder="Enter your content"
-              className="!w-full"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-            />
+            <MarkdownEditor value={content} onChange={setContent} />
 
             <Select
               name="tags"
@@ -188,7 +180,7 @@ export default function PostModal() {
             <Button
               type="submit"
               color="secondary"
-              className="self-center"
+              className="self-center text-center"
               disabled={isSubmitting}
             >
               {isSubmitting ? "Creating…" : "Submit"}

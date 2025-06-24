@@ -16,6 +16,10 @@ import { ReactPostData } from "../../services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
 import { reactToPost } from "../../services/posts/react";
 
+import ReactMarkdown from "react-markdown";
+import rehypeHighlight from "rehype-highlight";
+import "highlight.js/styles/github.css";
+
 type Reaction = "like" | "dislike" | "none";
 
 export default function PostDetails(props: {
@@ -158,9 +162,11 @@ export default function PostDetails(props: {
               <Tags tags={post.post.tags} />
             </div>
           </div>
-          <p className="text-default-900 text-lg pt-3 pb-3">
-            {post.post.content}
-          </p>
+          <div className="prose prose-invert prose-pre:bg-secondary-50 prose-pre:p-4 prose-code:text-secondary-900">
+            <ReactMarkdown remarkPlugins={[]} rehypePlugins={[rehypeHighlight]}>
+              {post.post.content}
+            </ReactMarkdown>
+          </div>
           {post.post.image_url && (
             <Image
               src={post.post.image_url}

@@ -4,6 +4,7 @@ import "./globals.css";
 import MainProvider from "./contexts/MainProvider";
 import Navbar from "./common/components/Navbar";
 import SideBar from "./common/components/Side-bar";
+import "highlight.js/styles/github.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
