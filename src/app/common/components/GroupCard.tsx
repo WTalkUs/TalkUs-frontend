@@ -29,7 +29,6 @@ export default function GroupCard({
 }: GroupCardProps) {
   return (
     <Link href={`/groups/${forumId}`} className="block h-full">
-      <a className="block h-full"> {/* Hace que todo el Card sea clickeable */}
         <Card
           className="overflow-hidden p-0 h-[260px] flex flex-col justify-between hover:shadow-lg transition-shadow duration-300 cursor-pointer"
           id={forumId}
@@ -78,7 +77,6 @@ export default function GroupCard({
             </div>
           </CardBody>
         </Card>
-      </a>
     </Link>
   );
 }

@@ -12,6 +12,8 @@ export interface Group {
   createdBy: string;
   bannerUrl?: string;
   iconUrl?: string;
+  members?: string[];
+  moderators?: string[];
 }
 
 export interface GetAllGroupsResponse {
