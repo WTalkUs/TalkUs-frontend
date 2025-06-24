@@ -1,11 +1,10 @@
 import { Card, CardHeader, CardBody } from "@heroui/react";
-import CreateGroupModal from "./CreateGroupModal";
+import { useRouter } from "next/navigation";
 
 interface CardItem {
-  id: number;
-  name?: string;
+  id: string;
   title?: string;
-  description: string;
+  image?: string;
 }
 
 interface SideBarCardsProps {
@@ -20,6 +19,7 @@ export default function SideBarCards({
   items = [],
   children,
 }: SideBarCardsProps) {
+  const router = useRouter();
   return (
     <>
       <Card className="max-w-[400px] p-2 bg-background-2">
@@ -31,11 +31,25 @@ export default function SideBarCards({
         <CardBody className="flex flex-col gap-3">
           {children && <div>{children}</div>}
           {items.map((item) => (
-            <div key={item.id} className="flex flex-col">
-              <p className="text-md font-medium">
-                {item.title || item.name || ""}
-              </p>
-              <p className="text-small text-default-500">{item.description}</p>
+            <div
+              key={item.id}
+              className="flex items-center gap-3 cursor-pointer hover:bg-background-3 rounded-lg p-2"
+              onClick={() => {
+                router.push(`/groups/${item.id}`);
+              }}
+            >
+              {item.image && (
+                <img
+                  src={item.image}
+                  alt={item.title || "Imagen"}
+                  className="w-12 h-12 object-cover rounded-lg flex-shrink-0"
+                />
+              )}
+              <div className="flex flex-col">
+                <p className="text-md font-medium overflow-hidden text-ellipsis whitespace-nowrap">
+                  {item.title || ""}
+                </p>
+              </div>
             </div>
           ))}
         </CardBody>
