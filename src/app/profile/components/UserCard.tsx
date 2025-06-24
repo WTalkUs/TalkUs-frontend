@@ -46,7 +46,7 @@ export default function UserCard() {
   // Mostrar loading mientras se carga la autenticación o los datos
   if (authLoading || isLoading || !displayName || !photoProfile || !banner) {
     return (
-      <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
+      <Card className="lg:w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
         <div className="relative">
           <div className="h-[250px] w-full relative overflow-hidden rounded-t-lg">
             <div className="w-full h-full bg-gray-200 animate-pulse"></div>
@@ -68,7 +68,7 @@ export default function UserCard() {
   }
 
   return (
-    <Card className="w-full max-w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
+    <Card className="lg:w-[900px] bg-background-1 shadow-md rounded-lg border border-default-200">
       <div className="relative">
         <div className="h-[250px] w-full relative overflow-hidden rounded-t-lg">
           <Image
