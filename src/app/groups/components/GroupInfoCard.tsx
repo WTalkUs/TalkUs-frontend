@@ -188,7 +188,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
         <div className="p-6 grid grid-cols-3 gap-4">
           <div className="col-span-2">{group?.description}</div>
           <div className=" col-span-1 flex gap-2 flex-wrap justify-end">
-            <PostModal />
+            <PostModal forumId={forumId}/>
 
             {/* Botón para cambiar email */}
             <Button

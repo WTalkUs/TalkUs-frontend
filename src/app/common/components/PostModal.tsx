@@ -17,7 +17,7 @@ import { createPost } from "../../services/posts/create";
 import { useAuth } from "@/app/contexts/AuthProvider";
 import {MarkdownEditor} from "@/app/common/components/MarkdownEditor";
 
-export default function PostModal() {
+export default function PostModal({forumId}: { forumId?: string }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user } = useAuth();
   const [title, setTitle] = useState<string>("");
@@ -58,6 +58,7 @@ export default function PostModal() {
         content,
         tag: tag,
         image: imageFile || undefined,
+        forum_id: forumId || undefined,
       });
 
       if (result.success) {

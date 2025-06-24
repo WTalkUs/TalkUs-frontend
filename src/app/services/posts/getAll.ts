@@ -15,6 +15,7 @@ export interface Post {
   image_url: string;
   likes: number;
   dislikes: number;
+  verdict?: string; // Agregado para manejar los posts relacionados y no relacionados
 }
 
 interface GetPostsSuccessResponse {

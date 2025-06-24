@@ -8,6 +8,7 @@ interface CreatePostData {
   content: string;
   tag: string[];
   image?: File;
+  forum_id?: string; 
 }
 
 interface CreatePostSuccessResponse {
@@ -31,6 +32,9 @@ export const createPost = async (postData: CreatePostData): Promise<CreatePostRe
     formData.append('author_id', postData.author_id);
     formData.append('title', postData.title);
     formData.append('content', postData.content);
+    if (postData.forum_id) {
+      formData.append('forum_id', postData.forum_id);
+    }
     
     if (postData.tag) {
       formData.append('tags', JSON.stringify(postData.tag));
