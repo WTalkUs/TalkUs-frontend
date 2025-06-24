@@ -1,7 +1,28 @@
 import axios, { AxiosError } from "axios";
 import api from "@lib/axios";
 
-export const getAllGroups = async (): Promise<any> => {
+export interface Group {
+  forumId: string;
+  title: string;
+  description: string;
+  categories: string[];
+  createdAt: string;
+  updatedAt: string;
+  isActive: boolean;
+  createdBy: string;
+  bannerUrl?: string;
+  iconUrl?: string;
+}
+
+export interface GetAllGroupsResponse {
+  success: boolean;
+  data?: Group[];
+  message?: string;
+  error?: string | object;
+  status?: number;
+}
+
+export const getAllGroups = async (): Promise<GetAllGroupsResponse> => {
   try {
     const response = await api.get("/public/subforos");
     return {

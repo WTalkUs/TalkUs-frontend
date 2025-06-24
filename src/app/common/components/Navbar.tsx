@@ -110,8 +110,10 @@ export default function NavbarComponent() {
         </Link>
         {user && (
           <Button
-            isIconOnly
-            className="bg-background-3 rounded-lg hidden sm:flex"
+            as={Link}
+            className="bg-background-3 min-w-5 rounded-lg items-center justify-center hidden sm:flex hover:bg-secondary-500 transition-colors"
+            href="/groups"
+            aria-label="Groups"
           >
             <IconUsersGroup size={24} className="text-default-500" />
           </Button>

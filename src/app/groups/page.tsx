@@ -1,21 +1,11 @@
 "use client";
 import styles from "../page.module.css";
 import { useEffect, useState } from "react";
-import { getAllGroups } from "@services/groups/getAll";
-
-interface Group {
-  forumId: string;
-  title: string;
-  description: string;
-  category: string;
-  createdAt: string;
-  updatedAt: string;
-  isActive: boolean;
-  createdBy: string;
-}
+import { getAllGroups, Group } from "@services/groups/getAll";
+import GroupCard from "@components/GroupCard";
 
 export default function GroupsPage() {
-  const [groups, setGroups] = useState([]);
+  const [groups, setGroups] = useState<Group[] | []>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,31 +26,24 @@ export default function GroupsPage() {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <div>
-          <h1 className="text-2xl font-bold mb-4">Groups</h1>
-          <ul>
-            {groups.map((group: Group) => (
-              <li key={group.forumId} className="mb-4 p-4 border rounded">
-                <h2 className="text-xl font-semibold">{group.title}</h2>
-                <p className="text-gray-600">{group.description}</p>
-                <p className="text-sm text-gray-500">
-                  Category: {group.category}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Created by: {group.createdBy}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Created at: {new Date(group.createdAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Updated at: {new Date(group.updatedAt).toLocaleDateString()}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Status: {group.isActive ? "Active" : "Inactive"}
-                </p>
-              </li>
-            ))}
-          </ul>
+        <h1 className="text-4xl font-bold">Groups</h1>
+        <div className="container mx-auto p-4 columns-1 sm:columns-2 lg:columns-2 gap-10 space-y-4">
+          {groups.map((group: Group) => (
+            <div key={group.forumId} className="break-inside-avoid">
+              <GroupCard
+                forumId={group.forumId}
+                title={group.title}
+                description={group.description}
+                categories={group.categories}
+                createdAt={group.createdAt}
+                updatedAt={group.updatedAt}
+                isActive={group.isActive}
+                createdBy={group.createdBy}
+                bannerUrl={group.bannerUrl}
+                iconUrl={group.iconUrl}
+              />
+            </div>
+          ))}
         </div>
       </main>
     </div>

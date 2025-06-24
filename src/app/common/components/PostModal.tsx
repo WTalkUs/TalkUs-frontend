@@ -104,7 +104,7 @@ export default function PostModal() {
     <>
       <Button
         onPress={onOpen}
-        className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2 ml-6"
+        className="bg-gradient-to-br from-indigo-500 to-pink-500 border-small border-white/50 shadow-pink-500/30 max-w-[100px] p-2 "
       >
         Create Post
       </Button>
