@@ -26,16 +26,17 @@ import { deletePost } from "@/app/services/posts/delete";
 import { reactToPost } from "@/app/services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
 import { getSavedStatus } from "@/app/services/posts/getPostSaved";
-import { getSavedPosts, Post } from "@/app/services/posts/getPostsSaved";
 import { unSavePost } from "@/app/services/posts/unSavePost";
 import type { ReactPostData } from "@/app/services/posts/react";
-
+import { getGroupById } from "@/app/services/groups/getById";
+import { reportPost } from "@/app/services/posts/report";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import { IconButton } from "@mui/material";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import FavoriteIcon from "@mui/icons-material/Favorite";
 import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
 
 type PostCardProps = {
   id: string;
@@ -73,10 +74,17 @@ export default function PostCard({
     onOpen: onOpenDelete,
     onClose: onCloseDelete,
   } = useDisclosure();
-
+  const {
+    isOpen: isOpenReport,
+    onOpen: onOpenReport,
+    onClose: onCloseReport,
+  } = useDisclosure();
   const [reaction, setReaction] = useState<Reaction>("none");
   const [saved, setSaved] = useState(false);
   const [counts, setCounts] = useState({ likes, dislikes });
+  const [moderatorIds, setModeratorIds] = useState<string[]>([]);
+  const params = useParams();
+  const groupId = params?.id as string;
 
   useEffect(() => {
     if (!user) return;
@@ -85,6 +93,15 @@ export default function PostCard({
       if (resp.success) setSaved(resp.saved);
     })();
   }, [id, user]);
+
+  useEffect(() => {
+    const fetchModeratorId = async () => {
+      if (!groupId) return;
+      const resp = await getGroupById(groupId);
+      setModeratorIds(resp.data.moderators);
+    };
+    fetchModeratorId();
+  }, [groupId]);
 
   const handleToggleSave = async () => {
     if (!user) return console.error("No auth");
@@ -96,6 +113,14 @@ export default function PostCard({
       console.error("Error toggling save:", result.error);
       setSaved((s) => !s);
     }
+  };
+
+  const handleReport = async () => {
+    const result = await reportPost({ postId: id });
+    if (!result.success) {
+      console.error("Error reporting post:", result.error);
+    }
+    onCloseReport();
   };
 
   useEffect(() => {
@@ -127,7 +152,6 @@ export default function PostCard({
     }
     onCloseDelete();
   };
-
   const handleReactPost = async (action: "like" | "dislike") => {
     if (!user) {
       console.error("User not authenticated");
@@ -238,6 +262,31 @@ export default function PostCard({
                   </DropdownMenu>
                 </Dropdown>
               ) : null}
+              {user?.uid && moderatorIds.includes(user.uid) ? (
+                <Dropdown className="!min-w-[140px]">
+                  <DropdownTrigger>
+                    <IconButton
+                      className="cursor-pointer h-32px !pt-0"
+                      color="inherit"
+                    >
+                      <ExpandMoreIcon fontSize="small" />
+                    </IconButton>
+                  </DropdownTrigger>
+                  <DropdownMenu aria-label="Static Actions">
+                    <DropdownItem key="delete" variant="light">
+                      <Button
+                        variant="solid"
+                        className="bg-gradient-to-br from-danger-500 to-danger-100 w-full"
+                        onPress={() => {
+                          onOpenReport();
+                        }}
+                      >
+                        Reportar
+                      </Button>
+                    </DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              ) : null}
             </div>
           </div>
           <div className=" items-center mt-4 grid grid-cols-4">
@@ -331,6 +380,33 @@ export default function PostCard({
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={handleDelete}>
                   Eliminar
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isOpenReport}
+        onOpenChange={(open) => {
+          if (!open) onCloseReport();
+        }}
+      >
+        <ModalContent>
+          {(open) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                Reportar Post
+              </ModalHeader>
+              <ModalBody>
+                <p>
+                  ¿Estás seguro de que deseas reportar este post? Esta acción no
+                  se puede deshacer.
+                </p>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="light" onPress={handleReport}>
+                  Reportar
                 </Button>
               </ModalFooter>
             </>
