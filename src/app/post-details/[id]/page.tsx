@@ -16,6 +16,8 @@ import { ReactPostData } from "../../services/posts/react";
 import { getUserVote } from "@/app/services/votes/getByUserId";
 import { reactToPost } from "../../services/posts/react";
 
+import { CommentList } from "@/app/comments/components/CommentList";
+
 import ReactMarkdown from "react-markdown";
 import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github.css";
@@ -213,6 +215,11 @@ export default function PostDetails(props: {
             </div>
           </div>
         </Card>
+        <section className="w-full max-w-[770px] mx-6 mt-4">
+        <h2 className="text-2xl font-bold mb-4">Comentarios</h2>
+        <CommentList postId={id} />
+      </section>
+
       </main>
     </div>
   );
