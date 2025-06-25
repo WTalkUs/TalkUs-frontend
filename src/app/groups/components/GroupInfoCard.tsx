@@ -12,6 +12,7 @@ import { IconSettings } from "@tabler/icons-react";
 import Tags from "@components/Tags";
 import joinGroup from "@services/groups/join";
 import leaveGroup from "@services/groups/leave";
+import EditGroupModal from "./EditGroupModal";
 
 export default function GroupInfoCard({ forumId }: { forumId: string }) {
   // Estados para manejar la información del grupo
@@ -24,7 +25,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isModerator, setIsModerator] = useState<boolean>(false);
   const [isMember, setIsMember] = useState<boolean>(false);
-
+  const [categories, setCategories] = useState<string[]>([]);
   // Estado para manejar la autenticación
   const { user, loading: authLoading } = useAuth();
   const router = useRouter();
@@ -39,6 +40,7 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
       setPhotoProfile(result.data.iconUrl || "");
       setDisplayName(result.data.title || "Grupo sin nombre");
       setIsModerator(result.data.moderators.includes(user?.uid));
+      setCategories(result.data.categories);
       setIsMember(
         result.data.members?.includes(user?.uid) ||
           result.data.moderators.includes(user?.uid)
@@ -191,14 +193,14 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
             </div>
           </div>
           <div className="absolute lg:bottom-2 lg:right-2 flex p-6 items-center gap-2">
-            <Tags tags={group?.categories}></Tags>
+            <Tags tags={categories}></Tags>
           </div>
         </div>
 
         <div className="p-6 grid grid-cols-3 gap-4">
           <div className="col-span-2">{group?.description}</div>
           <div className=" col-span-1 flex gap-2 flex-wrap justify-end">
-            <PostModal forumId={forumId} />
+            {isMember ? <PostModal forumId={forumId} /> : null}
 
             {/* Botón para cambiar email */}
             <Button
@@ -216,6 +218,21 @@ export default function GroupInfoCard({ forumId }: { forumId: string }) {
           </div>
         </div>
       </div>
+      <EditGroupModal
+        isOpen={isEditing}
+        onClose={() => setIsEditing(false)}
+        group={{
+          id: forumId,
+          title: group?.title || "",
+          content: group?.description || "",
+          categories: group?.categories || [],
+          bannerUrl: group?.bannerUrl || "",
+          iconUrl: group?.iconUrl || "",
+        }}
+        onSaved={() => {
+          setIsEditing(false);
+        }}
+      />
     </Card>
   );
 }

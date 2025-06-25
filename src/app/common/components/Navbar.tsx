@@ -119,22 +119,6 @@ export default function NavbarComponent() {
           </Button>
         )}
       </NavbarBrand>
-      <NavbarContent justify="center" className="flex-1 lg:flex max-w-3xl px-4">
-        <Input
-          classNames={{
-            base: "flex gap-4 h-10 w-full min-w-[150px]",
-            mainWrapper: "h-full w-full",
-            input: "text-small",
-            inputWrapper:
-              "h-full w-full font-normal text-default-500 bg-default-400/20 dark:bg-default-500/20",
-          }}
-          placeholder="Type to search..."
-          size="sm"
-          minLength={200}
-          endContent={<IconSearch size={18} className="text-default-500" />}
-          type="search"
-        />
-      </NavbarContent>
       {!user ? (
         <NavbarContent justify="end">
           <NavbarMenuToggle
@@ -150,12 +134,6 @@ export default function NavbarComponent() {
         </NavbarContent>
       ) : (
         <NavbarContent as="div" justify="end">
-          <Button
-            isIconOnly
-            className="bg-background-3 rounded-lg hidden md:flex"
-          >
-            <IconBell size={24} className="text-default-500" />
-          </Button>
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <div className="flex items-center gap-2 cursor-pointer">
@@ -185,13 +163,6 @@ export default function NavbarComponent() {
               </DropdownItem>
               <DropdownItem key="profile" href="/profile">
                 Profile
-              </DropdownItem>
-              <DropdownItem key="settings">Settings</DropdownItem>
-              <DropdownItem key="notifications" className="md:hidden">
-                Notifications
-              </DropdownItem>
-              <DropdownItem key="help_and_feedback">
-                Help & Feedback
               </DropdownItem>
               <DropdownItem
                 onClick={() => handleLogout()}
