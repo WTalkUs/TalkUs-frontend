@@ -105,9 +105,7 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
 
   const handleClose = () => {
     setBannerFile(null);
-    setBannerPreview(
-      "https://res.cloudinary.com/ddto2dyb4/image/upload/v1745378143/samples/man-portrait.jpg"
-    );
+    setBannerPreview(bannerPreview);
     setError(false);
     setSuccess(false);
     setResponseMessage("");
@@ -138,7 +136,7 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
 
           <Form onSubmit={handleEditBanner} className="space-y-6">
             {/* Banner del perfil */}
-            <div className="space-y-3">
+            <div className="space-y-3 w-full">
               <h3 className="text-lg font-medium">Banner Profile</h3>
               <div className="relative">
                 <div className="h-[150px] w-full relative overflow-hidden rounded-lg border-2 border-dashed border-gray-300">
@@ -163,6 +161,9 @@ export default function EditBannerModal({ isOpen, onClose, onSaved }: Props) {
                     onChange={(e) => {
                       const file = e.target.files?.[0] ?? null;
                       setBannerFile(file);
+                      if (file) {
+                        setBannerPreview(URL.createObjectURL(file));
+                      }
                     }}
                   />
                 </div>

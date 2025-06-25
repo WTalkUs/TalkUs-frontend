@@ -20,7 +20,8 @@ interface Props {
 }
 
 export default function EditProfileModal({ isOpen, onClose }: Props) {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [displayName, setDisplayName] = useState<string>(
     user?.displayName || ""
@@ -35,6 +36,22 @@ export default function EditProfileModal({ isOpen, onClose }: Props) {
   const [responseMessage, setResponseMessage] = useState<string>("");
   const [error, setError] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      // Solo intentar cargar datos si el usuario está autenticado y no estamos cargando
+      if (user && !authLoading) {
+        setIsLoading(true);
+        const result = await getUserById();
+        if (result.success && result.data) {
+          setPhotoPreview(result.data.profile_photo);
+        }
+        setIsLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, [user, authLoading]);
 
   const handleEditProfile = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -94,7 +111,7 @@ export default function EditProfileModal({ isOpen, onClose }: Props) {
   const handleClose = () => {
     setDisplayName(user?.displayName || "");
     setPhotoFile(null);
-    setPhotoPreview(user?.photoURL || "");
+    setPhotoPreview(photoPreview);
     setError(false);
     setSuccess(false);
     setResponseMessage("");
@@ -125,7 +142,7 @@ export default function EditProfileModal({ isOpen, onClose }: Props) {
 
           <Form onSubmit={handleEditProfile} className="space-y-6">
             {/* Foto de perfil */}
-            <div className="space-y-3">
+            <div className="space-y-3 w-full">
               <h3 className="text-lg font-medium">Profile Photo</h3>
               <div className="flex items-center gap-4">
                 <Avatar
@@ -144,6 +161,9 @@ export default function EditProfileModal({ isOpen, onClose }: Props) {
                     onChange={(e) => {
                       const file = e.target.files?.[0] ?? null;
                       setPhotoFile(file);
+                      if (file) {
+                        setPhotoPreview(URL.createObjectURL(file));
+                      }
                     }}
                   />
                 </div>
@@ -151,7 +171,7 @@ export default function EditProfileModal({ isOpen, onClose }: Props) {
             </div>
 
             {/* Nombre de usuario */}
-            <div className="space-y-3">
+            <div className="space-y-3 w-full">
               <h3 className="text-lg font-medium">Personal Information</h3>
               <Input
                 isRequired
