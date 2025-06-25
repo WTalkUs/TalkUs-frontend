@@ -29,7 +29,6 @@ export const editGroup = async (
 ): Promise<EditGroupResponse> => {
   const user = auth.currentUser;
   const token = user ? await user.getIdToken() : null;
-  console.log(groupData);
   const formData = new FormData();
 
   if (groupData.description) {
@@ -51,7 +50,6 @@ export const editGroup = async (
         "Content-Type": "multipart/form-data",
       },
     });
-    console.log(response.data);
     return {
       success: true,
       data: response.data,
