@@ -142,7 +142,7 @@ export default function PostDetails(props: {
   return (
     <div className={styles.page}>
       <main className={styles.main}>
-        <Card className="w-full max-w-[770px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 p-6 space-y-4">
+        <Card className="w-full max-w-[770px] min-w-[770px] bg-background-1 shadow-md rounded-lg border border-default-200 m-6 p-6 space-y-4">
           <div className="col-span-3 flex flex-col md:flex-row md:items-center gap-2">
             <Avatar
               isBordered
@@ -216,10 +216,9 @@ export default function PostDetails(props: {
           </div>
         </Card>
         <section className="w-full max-w-[770px] mx-6 mt-4">
-        <h2 className="text-2xl font-bold mb-4">Comentarios</h2>
-        <CommentList postId={id} />
-      </section>
-
+          <h2 className="text-2xl font-bold mb-4">Comentarios</h2>
+          <CommentList postId={id} />
+        </section>
       </main>
     </div>
   );
