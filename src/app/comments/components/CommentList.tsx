@@ -63,8 +63,6 @@ export const CommentList = ({
       setLoading(false);
     }
   };
-
-  console.log("comments", comments);
   const buildCommentTree = (comments: Comment[]): Comment[] => {
     const commentMap: Record<string, Comment> = {};
     const rootComments: Comment[] = [];
